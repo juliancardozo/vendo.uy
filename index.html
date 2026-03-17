@@ -527,7 +527,7 @@
       <div class="hero-content">
         <div class="hero-text">
           <h1>Me mudo y vendo de todo</h1>
-          <p class="subtitle">Venta de muebles y electrodomésticos usados,
+          <p class="subtitle">Hola! Venta de muebles y electrodomésticos usados,
 Me estoy mudando y por eso estoy vendiendo varias cosas de mi hogar.
 Armé este catálogo para compartirlo fácil por WhatsApp, redes o con amigos.
 Los precios están en pesos uruguayos.</p>
@@ -538,19 +538,19 @@ Los precios están en pesos uruguayos.</p>
       </div>
       <div class="stats">
         <div class="stat stat-highlight">
-          <small>Combo casa completa</small>
-          <strong id="comboPrice">$ 50.000</strong>
-          <p>Incluye todos los artículos disponibles. Sirve como negocio. Si tenes lugar para almacenarlo, es una gran oportunidad. Conversamos el flete entre los dos.</p>
+          <small>Abajo se pueden ver los productos y filtrar por ambiente.</small>
+          <strong id="availableItems">Abajo se puede filtrar para encontrar mejor los productos</strong>
+          <p>Coordinemos la entrega.</p>
         </div>
         <div class="stat stat-deal">
-          <small>Más de un artículo</small>
-          <strong>-10%</strong>
-          <p>Llevate 2 o más ítems y aplico un 10% extra sobre el total.</p>
+          <small>Objetos usados</small>
+          <strong>Oportunidad</strong>
+          <p>Si somos amigos escribime, elegí y coordinamos el flete.</p>
         </div>
         <div class="stat stat-available">
-          <small>Disponibles ahora</small>
-          <strong id="availableItems">0</strong>
-          <p>Coordinamos las entregas para Abril.</p>
+          <small>Compartí a tus amigos</small>
+          <strong id="totalRooms">Libros</strong>
+          <p>Hay unos cuantos interesantes. Programación, psicología, música, arte.</p>
         </div>
       </div>
     </section>
@@ -719,9 +719,11 @@ Los precios están en pesos uruguayos.</p>
         const soldClass = p.sold ? ' sold' : '';
         const featuredClass = p.category === 'Libros' ? ' card--featured' : '';
         const titleClass = `title${p.sold ? ' title--sold' : ''}`;
+        const isBook = p.category === 'Libros';
         const imgHtml = `
           <div class="product-media${soldClass}">
             <img src="${imgSrc}" alt="${p.name}" loading="lazy" decoding="async" />
+            ${isBook ? '<span class="product-media__badge">Pack curado</span>' : ''}
             ${p.sold ? '<span class="product-media__badge">Vendido</span>' : ''}
           </div>
         `;
@@ -729,7 +731,10 @@ Los precios están en pesos uruguayos.</p>
           <article class="card${soldClass}${featuredClass}">
             ${imgHtml}
             <div class="topline">
-              <h3 class="${titleClass}">${p.name}</h3>
+              <h3 class="${titleClass}">
+                ${p.name}
+                ${isBook ? '<br><small style="font-size:13px;color:#475569;font-weight:400;">Incluye "Las venas abiertas de América Latina", "Deja de ser tú", "No me vengas con historias" y más.</small>' : ''}
+              </h3>
               <div class="price">${formatUYU(p.price)}</div>
             </div>
             <div class="meta">
