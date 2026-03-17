@@ -430,11 +430,14 @@
       flex: 1 1 320px;
       min-width: 260px;
     }
-    .map-card__map img {
+    .map-card__map img,
+    .map-card__map iframe {
       width: 100%;
       display: block;
       border-radius: 16px;
       box-shadow: 0 12px 28px rgba(5,20,36,0.18);
+      border: 0;
+      min-height: 260px;
     }
     .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
     .cta {
@@ -513,7 +516,7 @@
     <section class="hero">
       <div class="hero-content">
         <div class="hero-text">
-          <h1>Venta de muebles y electrodomésticos</h1>
+          <h1>Me mudo y vendo todo</h1>
           <p class="subtitle">Venta de muebles y electrodomésticos
 Me estoy mudando y por eso estoy vendiendo varias cosas de mi hogar.
 Armé este catálogo para compartirlo fácil por WhatsApp, redes o con amigos.
@@ -526,8 +529,8 @@ Los precios están en pesos uruguayos.</p>
       <div class="stats">
         <div class="stat stat-highlight">
           <small>Combo casa completa</small>
-          <strong>$ 50.000</strong>
-          <p>Super descuento por todo el catálogo. Ideal para amueblar una casa entera.</p>
+          <strong id="comboPrice">$ 50.000</strong>
+          <p>Incluye todos los artículos disponibles. Precio especial = total actual - 25%.</p>
         </div>
         <div class="stat stat-deal">
           <small>Más de un artículo</small>
@@ -579,7 +582,13 @@ Los precios están en pesos uruguayos.</p>
           </a>
         </div>
         <div class="map-card__map">
-          <img src="https://staticmap.openstreetmap.de/staticmap.php?center=-34.8118293,-55.9247224&zoom=15&size=640x320&markers=-34.8118293,-55.9247224,red-pushpin" alt="Mapa señalando Médanos de Solymar" loading="lazy" decoding="async" />
+          <iframe
+            src="https://www.google.com/maps?q=-34.8118293,-55.9247224&hl=es&z=15&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Mapa señalando Médanos de Solymar"
+            allowfullscreen
+          ></iframe>
         </div>
       </div>
       <div class="footer">
@@ -637,10 +646,16 @@ Los precios están en pesos uruguayos.</p>
     function renderStats() {
       const soldCount = products.filter(p => p.sold).length;
       const availableCount = products.length - soldCount;
+      const availableTotal = products
+        .filter(p => !p.sold)
+        .reduce((acc, p) => acc + p.price, 0);
+      const comboPrice = Math.round(availableTotal * 0.75);
       const soldEl = document.getElementById('soldItems');
       const availableEl = document.getElementById('availableItems');
+      const comboEl = document.getElementById('comboPrice');
       if (soldEl) soldEl.textContent = soldCount;
       if (availableEl) availableEl.textContent = availableCount;
+      if (comboEl) comboEl.textContent = formatUYU(comboPrice);
     }
 
     function makeFilterButton(label, onClick, active) {
