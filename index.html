@@ -537,11 +537,6 @@ Los precios están en pesos uruguayos.</p>
           <strong>-10%</strong>
           <p>Llevate 2 o más ítems y aplico un 10% extra sobre el total.</p>
         </div>
-        <div class="stat">
-          <small>Valor total publicado</small>
-          <strong id="totalValue">$ 0</strong>
-          <p>Suma de todos los artículos con sus precios actuales.</p>
-        </div>
         <div class="stat stat-available">
           <small>Disponibles ahora</small>
           <strong id="availableItems">0</strong>
@@ -655,16 +650,13 @@ Los precios están en pesos uruguayos.</p>
       const availableTotal = products
         .filter(p => !p.sold)
         .reduce((acc, p) => acc + p.price, 0);
-      const totalValue = products.reduce((acc, p) => acc + p.price, 0);
       const comboPrice = Math.round(availableTotal * 0.75);
       const soldEl = document.getElementById('soldItems');
       const availableEl = document.getElementById('availableItems');
       const comboEl = document.getElementById('comboPrice');
-      const totalValueEl = document.getElementById('totalValue');
       if (soldEl) soldEl.textContent = soldCount;
       if (availableEl) availableEl.textContent = availableCount;
       if (comboEl) comboEl.textContent = formatUYU(comboPrice);
-      if (totalValueEl) totalValueEl.textContent = formatUYU(totalValue);
     }
 
     function makeFilterButton(label, onClick, active) {
