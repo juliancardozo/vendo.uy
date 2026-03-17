@@ -255,7 +255,23 @@
       box-shadow: 0 16px 30px rgba(255, 168, 76, 0.18);
     }
     .stat small { display: block; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.02em; }
-    .stat strong { font-size: 30px; color: #054866; }
+    .stat strong { font-size: 30px; color: #054866; display: block; }
+    .stat p { margin: 6px 0 0; color: rgba(15,23,42,0.75); font-size: 14px; line-height: 1.4; }
+    .stat-highlight {
+      background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(168,85,247,0.25));
+      border-color: rgba(56,189,248,0.4);
+    }
+    .stat-highlight strong { color: #0ea5e9; font-size: 32px; }
+    .stat-deal strong { color: #0ea5e9; }
+    .stat-available {
+      background: rgba(15, 126, 95, 0.85);
+      border-color: rgba(15,126,95,0.9);
+      box-shadow: 0 20px 40px rgba(5, 46, 32, 0.35);
+      color: #e6fff3;
+    }
+    .stat-available small { color: rgba(230,255,243,0.85); }
+    .stat-available strong { color: #ffffff; text-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .stat-available p { color: rgba(230,255,243,0.9); }
     .toolbar {
       display: flex;
       flex-wrap: wrap;
@@ -508,10 +524,26 @@ Los precios están en pesos uruguayos.</p>
         </div>
       </div>
       <div class="stats">
-        <div class="stat"><small>Artículos publicados</small><strong id="totalItems">0</strong></div>
-        <div class="stat"><small>Valor total publicado</small><strong id="totalPrice">$ 0</strong></div>
-        <div class="stat"><small>Categorías</small><strong id="totalCategories">0</strong></div>
-        <div class="stat"><small>Ambientes</small><strong id="totalRooms">0</strong></div>
+        <div class="stat stat-highlight">
+          <small>Combo casa completa</small>
+          <strong>$ 50.000</strong>
+          <p>Super descuento por todo el catálogo. Ideal para amueblar una casa entera.</p>
+        </div>
+        <div class="stat stat-deal">
+          <small>Más de un artículo</small>
+          <strong>-10%</strong>
+          <p>Llevate 2 o más ítems y aplico un 10% extra sobre el total.</p>
+        </div>
+        <div class="stat">
+          <small>Artículos vendidos</small>
+          <strong id="soldItems">0</strong>
+          <p>Reservados recientemente.</p>
+        </div>
+        <div class="stat stat-available">
+          <small>Disponibles ahora</small>
+          <strong id="availableItems">0</strong>
+          <p>Listos para retiro o envío coordinado.</p>
+        </div>
       </div>
     </section>
 
@@ -603,10 +635,12 @@ Los precios están en pesos uruguayos.</p>
     const searchInput = document.getElementById('searchInput');
 
     function renderStats() {
-      document.getElementById('totalItems').textContent = products.length;
-      document.getElementById('totalPrice').textContent = formatUYU(products.reduce((acc, p) => acc + p.price, 0));
-      document.getElementById('totalCategories').textContent = new Set(products.map(p => p.category)).size;
-      document.getElementById('totalRooms').textContent = new Set(products.map(p => p.room)).size;
+      const soldCount = products.filter(p => p.sold).length;
+      const availableCount = products.length - soldCount;
+      const soldEl = document.getElementById('soldItems');
+      const availableEl = document.getElementById('availableItems');
+      if (soldEl) soldEl.textContent = soldCount;
+      if (availableEl) availableEl.textContent = availableCount;
     }
 
     function makeFilterButton(label, onClick, active) {
