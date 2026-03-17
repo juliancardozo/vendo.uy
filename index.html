@@ -337,6 +337,16 @@
       gap: 12px;
       backdrop-filter: blur(4px);
     }
+    .card--featured {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    @media (min-width: 1024px) {
+      .card--featured {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+    }
     .topline {
       display: flex;
       justify-content: space-between;
@@ -595,7 +605,7 @@ Los precios están en pesos uruguayos.</p>
   <script>
     // products with images mapped from img/ (automatically assigned where matching filename exists)
     const products = [
-      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/calefon-thumb.jpg' },
+      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/calefon-thumb.jpg', sold: true },
       { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/lavarropas-thumb.jpg' },
       { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
       { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg' },
@@ -618,7 +628,7 @@ Los precios están en pesos uruguayos.</p>
       { name: 'Artefactos de estufa', price: 1000, original: 1000, category: 'Calefacción', room: 'Living', image: 'img/reales/thumbs/hierrosEstufa-thumb.jpg' },
       { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/repisa-thumb.jpg' },
       { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/ratona-thumb.jpg' },
-      { name: 'Silla artesanal', price: 1500, original: 2000, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/sillaArtesanal-thumb.jpg' },
+      { name: 'Silla artesanal', price: 1500, original: 2000, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/sillaArtesanal-thumb.jpg', sold: true },
       { name: 'Sillón (3 cuerpos)', price: 3000, original: 18300, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/sillon-thumb.jpg' },
       { name: 'Mesa para exterior 1,5 m x 1 m', price: 1700, original: 3200, category: 'Mueble', room: 'Living' },
       { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/mesaVidrioNegra-thumb.jpg' },
@@ -707,6 +717,7 @@ Los precios están en pesos uruguayos.</p>
         const discount = Math.round((1 - p.price / p.original) * 100);
         const imgSrc = p.image || DEFAULT_PRODUCT_IMAGE;
         const soldClass = p.sold ? ' sold' : '';
+        const featuredClass = p.category === 'Libros' ? ' card--featured' : '';
         const titleClass = `title${p.sold ? ' title--sold' : ''}`;
         const imgHtml = `
           <div class="product-media${soldClass}">
@@ -715,7 +726,7 @@ Los precios están en pesos uruguayos.</p>
           </div>
         `;
         return `
-          <article class="card${soldClass}">
+          <article class="card${soldClass}${featuredClass}">
             ${imgHtml}
             <div class="topline">
               <h3 class="${titleClass}">${p.name}</h3>
