@@ -530,7 +530,7 @@ Los precios están en pesos uruguayos.</p>
         <div class="stat stat-highlight">
           <small>Combo casa completa</small>
           <strong id="comboPrice">$ 50.000</strong>
-          <p>Incluye todos los artículos disponibles. Precio especial = total actual - 25%.</p>
+          <p>Incluye todos los artículos disponibles. Sirve como negocio. Si tenes lugar para almacenarlo, es una gran oportunidad. Conversamos el flete entre los dos.</p>
         </div>
         <div class="stat stat-deal">
           <small>Más de un artículo</small>
@@ -538,13 +538,14 @@ Los precios están en pesos uruguayos.</p>
           <p>Llevate 2 o más ítems y aplico un 10% extra sobre el total.</p>
         </div>
         <div class="stat">
-          <small>Entrego en ABRIL</small>
-          <p>Dejame un mensaje y coordinamos.</p>
+          <small>Valor total publicado</small>
+          <strong id="totalValue">$ 0</strong>
+          <p>Suma de todos los artículos con sus precios actuales.</p>
         </div>
         <div class="stat stat-available">
           <small>Disponibles ahora</small>
           <strong id="availableItems">0</strong>
-          <p>Listos para retiro o envío coordinado.</p>
+          <p>Coordinamos las entregas para Abril.</p>
         </div>
       </div>
     </section>
@@ -575,7 +576,7 @@ Los precios están en pesos uruguayos.</p>
       <div class="map-card" aria-label="Mapa de referencia para retirar los artículos">
         <div class="map-card__info">
           <h3>Ubicación en Médanos de Solymar</h3>
-          <p>Los artículos están cerca de la gráfica del barrio, en Médanos de Solymar.</p>
+          <p>Es cerca de este sitio en Médanos de Solymar.</p>
           <a class="map-card__link" href="https://www.google.com/maps/@-34.8118293,-55.9247224,15z?entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener">
             Abrir en Google Maps <span>↗</span>
           </a>
@@ -604,9 +605,9 @@ Los precios están en pesos uruguayos.</p>
       { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
       { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg' },
       { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg', sold: true },
-      { name: 'Microondas', price: 1700, original: 2400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
-      { name: 'Tostadora', price: 1200, original: 1600, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/tostadora-thumb.jpg' },
-      { name: 'Jarra eléctrica', price: 1400, original: 1800, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
+      { name: 'Microondas', price: 2040, original: 2400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
+      { name: 'Tostadora', price: 1440, original: 1600, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/tostadora-thumb.jpg' },
+      { name: 'Jarra eléctrica', price: 1680, original: 1800, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
       { name: 'Toca discos Bluetooth (incluye vinilo)', price: 1500, original: 2100, category: 'Electrodoméstico', room: 'Living', image: 'img/reales/thumbs/tocaDisco-thumb.jpg', sold: true },
       { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
       { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/roperoDormitorio-thumb.jpg' },
@@ -654,13 +655,16 @@ Los precios están en pesos uruguayos.</p>
       const availableTotal = products
         .filter(p => !p.sold)
         .reduce((acc, p) => acc + p.price, 0);
+      const totalValue = products.reduce((acc, p) => acc + p.price, 0);
       const comboPrice = Math.round(availableTotal * 0.75);
       const soldEl = document.getElementById('soldItems');
       const availableEl = document.getElementById('availableItems');
       const comboEl = document.getElementById('comboPrice');
+      const totalValueEl = document.getElementById('totalValue');
       if (soldEl) soldEl.textContent = soldCount;
       if (availableEl) availableEl.textContent = availableCount;
       if (comboEl) comboEl.textContent = formatUYU(comboPrice);
+      if (totalValueEl) totalValueEl.textContent = formatUYU(totalValue);
     }
 
     function makeFilterButton(label, onClick, active) {
