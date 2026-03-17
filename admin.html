@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Backoffice - Casa Médanos</title>
+  <style>
+    body{font-family:Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;padding:20px;background:#f7f7f5}
+    .card{background:#fff;padding:16px;border-radius:12px;border:1px solid #e5e7eb;max-width:900px;margin:10px auto}
+    input, button{padding:8px 10px;border-radius:8px;border:1px solid #e5e7eb}
+    .row{display:flex;gap:10px;align-items:center}
+    .images{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .images img{width:140px;height:100px;object-fit:cover;border-radius:8px;border:1px solid #e5e7eb}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="card" id="loginCard">
+    <h2>Backoffice privado</h2>
+    <p>Ingresá la contraseña para acceder a las herramientas de administración.</p>
+    <div class="row">
+      <input id="password" type="password" placeholder="Contraseña" />
+      <button id="loginBtn">Entrar</button>
+    </div>
+    <div id="loginMsg" style="color:red;margin-top:8px"></div>
+  </div>
+
+  <div class="card hidden" id="adminCard">
+    <h2>Subir imagen</h2>
+    <form id="uploadForm">
+      <div class="row">
+        <input type="file" id="fileInput" name="file" accept="image/*" />
+        <button type="submit">Subir</button>
+        <button id="logoutBtn" type="button">Cerrar sesión</button>
+      </div>
+    </form>
+    <h3>Imágenes en /img</h3>
+    <div id="images" class="images"></div>
+    <hr />
+    <h3>Mapeo sugerido (confirmar antes de aplicar)</h3>
+    <button id="suggestBtn">Obtener sugerencias</button>
+    <button id="applyBtn">Aplicar sugerencias (crea backup)</button>
+    <div id="interactive" style="margin-top:10px"></div>
+    <div id="suggestions" style="margin-top:10px"></div>
+    <div id="status" style="margin-top:10px;color:green"></div>
+  </div>
+
+  <script>
+    async function authStatus(){
+      const r = await fetch('/admin/auth-status');
+      return r.json();
+    }
+    const loginCard = document.getElementById('loginCard');
+    const adminCard = document.getElementById('adminCard');
+    const loginBtn = document.getElementById('loginBtn');
+    const password = document.getElementById('password');
+    const loginMsg = document.getElementById('loginMsg');
+    const uploadForm = document.getElementById('uploadForm');
+    const imagesDiv = document.getElementById('images');
+    const suggestBtn = document.getElementById('suggestBtn');
+    const suggestionsDiv = document.getElementById('suggestions');
+    const applyBtn = document.getElementById('applyBtn');
+    const statusDiv = document.getElementById('status');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    async function showImages(){
+      const r = await fetch('/admin/images');
+      if (!r.ok) return;
+      const j = await r.json();
+      imagesDiv.innerHTML = '';
+      j.images.forEach(fn => {
+        const img = document.createElement('img'); img.src = '/img/' + fn; img.alt = fn;
+        imagesDiv.appendChild(img);
+      });
+    }
+
+    loginBtn.addEventListener('click', async () => {
+      loginMsg.textContent = '';
+      const pw = password.value;
+      const r = await fetch('/admin/login', { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({ password: pw }) });
+      if (r.ok){ loginCard.classList.add('hidden'); adminCard.classList.remove('hidden'); showImages(); }
+      else { loginMsg.textContent = 'Contraseña inválida'; }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await fetch('/admin/logout', { method:'POST' });
+      adminCard.classList.add('hidden'); loginCard.classList.remove('hidden');
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fileInput = document.getElementById('fileInput');
+      if (!fileInput.files.length) return;
+      const fd = new FormData(); fd.append('file', fileInput.files[0]);
+      const r = await fetch('/admin/upload', { method: 'POST', body: fd });
+      const j = await r.json();
+      if (r.ok){ statusDiv.textContent = 'Subida OK: ' + j.filename; showImages(); fileInput.value = ''; }
+      else { statusDiv.textContent = 'Error: ' + (j.error || ''); }
+      setTimeout(()=> statusDiv.textContent = '', 3500);
+    });
+
+    suggestBtn.addEventListener('click', async () => {
+      suggestionsDiv.textContent = 'Cargando...';
+      const r = await fetch('/admin/suggestions');
+      const j = await r.json();
+      if (!r.ok) { suggestionsDiv.textContent = 'Error: ' + (j.error || ''); return; }
+      // build interactive table
+      const products = j.products || [];
+      const images = j.images || [];
+      const suggestions = j.suggestions || [];
+      suggestionsDiv.textContent = '';
+      const interactive = document.getElementById('interactive');
+      interactive.innerHTML = '';
+      const table = document.createElement('div');
+      table.innerHTML = `<div style="font-weight:700;display:flex;gap:12px;padding:6px 0"><div style="width:360px">Producto</div><div>Imagen asignada</div></div>`;
+      products.forEach(p => {
+        const row = document.createElement('div');
+        row.style.display = 'flex'; row.style.gap = '12px'; row.style.alignItems = 'center'; row.style.padding = '6px 0';
+        const title = document.createElement('div'); title.style.width = '360px'; title.textContent = p.name + ' — ' + (p.category||'') + ' / ' + (p.room||'');
+        const sel = document.createElement('select'); sel.dataset.index = p.index;
+        const noneOpt = document.createElement('option'); noneOpt.value = ''; noneOpt.textContent = '(ninguno)'; sel.appendChild(noneOpt);
+        images.forEach(img => { const o = document.createElement('option'); o.value = img; o.textContent = img; sel.appendChild(o); });
+        // set default to suggestion if exists
+        const suggested = (suggestions.find(s => s.index === p.index) || {}).suggestion;
+        if (suggested) sel.value = suggested;
+        row.appendChild(title); row.appendChild(sel);
+        table.appendChild(row);
+      });
+      interactive.appendChild(table);
+      // show a second row with a preview area
+      const preview = document.createElement('div'); preview.style.marginTop = '10px'; interactive.appendChild(preview);
+      // when select changes, update preview
+      interactive.querySelectorAll('select').forEach(sel => {
+        sel.addEventListener('change', () => {
+          const v = sel.value;
+          preview.innerHTML = v ? `<img src='/img/${v}' style='max-width:320px;border:1px solid #e5e7eb;border-radius:8px'/>` : '';
+        });
+      });
+      suggestionsDiv.innerHTML = '<div class="small">Revisá y ajustá cada asignación. Luego clic en "Aplicar mapeo confirmado".</div>';
+      // add apply-confirm button
+      let applyConfirmed = document.getElementById('applyConfirmedBtn');
+      if (!applyConfirmed) {
+        applyConfirmed = document.createElement('button'); applyConfirmed.id = 'applyConfirmedBtn'; applyConfirmed.textContent = 'Aplicar mapeo confirmado (crea backup)'; applyConfirmed.style.marginTop = '10px';
+        applyConfirmed.addEventListener('click', async () => {
+          if (!confirm('Aplicar el mapeo seleccionado modificará index.html y creará index.html.bak. Continuar?')) return;
+          const selects = interactive.querySelectorAll('select');
+          const mappings = Array.from(selects).sort((a,b)=> Number(a.dataset.index)-Number(b.dataset.index)).map(s => s.value || null);
+          statusDiv.textContent = 'Aplicando mapeo...';
+          const r2 = await fetch('/admin/apply-mapping-custom', { method: 'POST', headers: {'content-type':'application/json'}, body: JSON.stringify({ mappings }) });
+          const j2 = await r2.json();
+          if (r2.ok) { statusDiv.textContent = 'Aplicado. Backup: ' + j2.backup; }
+          else { statusDiv.textContent = 'Error: ' + (j2.error || ''); }
+          setTimeout(()=> statusDiv.textContent = '', 5000);
+        });
+        suggestionsDiv.appendChild(applyConfirmed);
+      }
+    });
+
+    applyBtn.addEventListener('click', async () => {
+      if (!confirm('Aplicar las sugerencias automáticas modificará index.html y creará index.html.bak. Continuar?')) return;
+      statusDiv.textContent = 'Aplicando...';
+      const r = await fetch('/admin/apply-mapping', { method: 'POST' });
+      const j = await r.json();
+      if (r.ok) { statusDiv.textContent = 'Aplicado. Backup: ' + j.backup; }
+      else { statusDiv.textContent = 'Error: ' + (j.error || ''); }
+      setTimeout(()=> statusDiv.textContent = '', 5000);
+    });
+
+    // on load, check auth
+    (async ()=>{
+      const s = await authStatus();
+      if (s.authenticated){ loginCard.classList.add('hidden'); adminCard.classList.remove('hidden'); showImages(); }
+    })();
+  </script>
+</body>
+</html>

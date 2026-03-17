@@ -169,6 +169,7 @@
       color: var(--muted);
       text-align: center;
     }
+    .card img { width:100%; border-radius:12px; display:block; margin-bottom:8px; }
   </style>
 </head>
 <body>
@@ -194,6 +195,8 @@
       </div>
     </div>
 
+    <!-- imagenes integradas en código (estáticas en carpeta img/) -->
+
     <section class="grid" id="productGrid"></section>
 
     <section class="contact">
@@ -213,27 +216,27 @@
 
   <script>
     const products = [
-      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño' },
-      { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño' },
-      { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina' },
-      { name: 'Microondas', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Tostadora', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Jarra eléctrica', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Mesa de luz', price: 1000, original: 1400, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
-      { name: 'Ropero blanco mediano 2 puertas', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
-      { name: 'Modular horizontal 1x2 mts', price: 1000, original: 1400, category: 'Mueble', room: 'Escritorio' },
-      { name: 'TV amurado y soporte', price: 2500, original: 3500, category: 'Electrodoméstico', room: 'Living' },
-      { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living' },
-      { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living' },
-      { name: 'Sillón', price: 1000, original: 1400, category: 'Mueble', room: 'Living' },
-      { name: 'Mesa', price: 1000, original: 1400, category: 'Mueble', room: 'Living' },
-      { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living' }
+      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/voluntad.svg' },
+      { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/voluntad.svg' },
+      { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Microondas', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Tostadora', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Jarra eléctrica', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/voluntad.svg' },
+      { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/voluntad.svg' },
+      { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio', image: 'img/voluntad.svg' },
+      { name: 'Mesa de luz', price: 1000, original: 1400, category: 'Mueble', room: 'Dormitorio', image: 'img/voluntad.svg' },
+      { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/voluntad.svg' },
+      { name: 'Ropero blanco mediano 2 puertas', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/voluntad.svg' },
+      { name: 'Modular horizontal 1x2 mts', price: 1000, original: 1400, category: 'Mueble', room: 'Escritorio', image: 'img/voluntad.svg' },
+      { name: 'TV amurado y soporte', price: 2500, original: 3500, category: 'Electrodoméstico', room: 'Living', image: 'img/voluntad.svg' },
+      { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living', image: 'img/voluntad.svg' },
+      { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living', image: 'img/voluntad.svg' },
+      { name: 'Sillón', price: 1000, original: 1400, category: 'Mueble', room: 'Living', image: 'img/voluntad.svg' },
+      { name: 'Mesa', price: 1000, original: 1400, category: 'Mueble', room: 'Living', image: 'img/voluntad.svg' },
+      { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living', image: 'img/voluntad.svg' }
     ];
 
     const formatUYU = value => new Intl.NumberFormat('es-UY', {
@@ -306,8 +309,10 @@
 
       productGrid.innerHTML = filtered.map(p => {
         const discount = Math.round((1 - p.price / p.original) * 100);
+        const imgHtml = p.image ? `<div style="border-radius:12px;overflow:hidden"><img src="${p.image}" alt="${p.name}" style="width:100%;height:auto;display:block;margin-bottom:8px;border-radius:12px"/></div>` : '';
         return `
           <article class="card">
+            ${imgHtml}
             <div class="topline">
               <h3 class="title">${p.name}</h3>
               <div class="price">${formatUYU(p.price)}</div>
