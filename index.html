@@ -443,7 +443,48 @@
       text-align: center;
       box-shadow: 0 15px 30px rgba(6,182,212,0.12);
     }
-    .card img { width:100%; border-radius:16px; display:block; margin-bottom:8px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+    .product-media {
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    }
+    .product-media img {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+      transition: opacity 0.3s ease, filter 0.3s ease;
+    }
+    .product-media__badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15,23,42,0.85);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+    .card.sold {
+      opacity: 0.85;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+    .card.sold .product-media img {
+      filter: grayscale(1) brightness(0.8);
+    }
+    .card.sold .price {
+      color: rgba(148,163,184,0.9);
+    }
+    .title--sold {
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      text-decoration-color: rgba(148,163,184,0.7);
+      color: rgba(148,163,184,0.9);
+    }
   </style>
 </head>
 <body>
@@ -522,11 +563,11 @@ Los precios están en pesos uruguayos.</p>
       { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/lavarropas-thumb.jpg' },
       { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
       { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg' },
-      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg' },
+      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg', sold: true },
       { name: 'Microondas', price: 1700, original: 2400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
       { name: 'Tostadora', price: 1200, original: 1600, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/tostadora-thumb.jpg' },
       { name: 'Jarra eléctrica', price: 1400, original: 1800, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
-      { name: 'Toca discos Bluetooth (incluye vinilo)', price: 1500, original: 2100, category: 'Electrodoméstico', room: 'Living', image: 'img/reales/thumbs/tocaDisco-thumb.jpg' },
+      { name: 'Toca discos Bluetooth (incluye vinilo)', price: 1500, original: 2100, category: 'Electrodoméstico', room: 'Living', image: 'img/reales/thumbs/tocaDisco-thumb.jpg', sold: true },
       { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
       { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/roperoDormitorio-thumb.jpg' },
       { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/sommier-thumb.jpg' },
@@ -614,12 +655,19 @@ Los precios están en pesos uruguayos.</p>
       productGrid.innerHTML = filtered.map(p => {
         const discount = Math.round((1 - p.price / p.original) * 100);
         const imgSrc = p.image || DEFAULT_PRODUCT_IMAGE;
-        const imgHtml = `<div style="border-radius:12px;overflow:hidden"><img src="${imgSrc}" alt="${p.name}" style="width:100%;height:auto;display:block;margin-bottom:8px;border-radius:12px"/></div>`;
+        const soldClass = p.sold ? ' sold' : '';
+        const titleClass = `title${p.sold ? ' title--sold' : ''}`;
+        const imgHtml = `
+          <div class="product-media${soldClass}">
+            <img src="${imgSrc}" alt="${p.name}" loading="lazy" decoding="async" />
+            ${p.sold ? '<span class="product-media__badge">Vendido</span>' : ''}
+          </div>
+        `;
         return `
-          <article class="card">
+          <article class="card${soldClass}">
             ${imgHtml}
             <div class="topline">
-              <h3 class="title">${p.name}</h3>
+              <h3 class="${titleClass}">${p.name}</h3>
               <div class="price">${formatUYU(p.price)}</div>
             </div>
             <div class="meta">
