@@ -1,0 +1,22 @@
+# Ignorar los modulos de node
+node_modules/
+# Ignorar los archivos de log
+logs
+*.log
+# Ignorar los archivos de entorno
+.env
+# Ignorar los archivos de construcción
+dist/
+build/
+# Ignorar los archivos de cobertura de pruebas
+coverage/
+# Ignorar los archivos de configuración de IDE
+.vscode/
+.idea/
+# Ignorar los archivos de sistema
+.DS_Store
+# Ignorar los archivos de dependencias
+package-lock.json
+yarn.lock
+# Ignorar los archivos de configuración de ESLint
+.eslintrc.js

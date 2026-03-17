@@ -21,8 +21,14 @@ const INDEX_HTML = path.join(APP_ROOT, 'index.html');
 
 if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+// You can override the password by setting the ADMIN_PASSWORD environment variable.
+// Default changed from 'admin123' to a stronger local-test value. Change as needed.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'miSuperClave123';
 const PORT = process.env.PORT || 3000;
+
+// Debug: show which password is active when the server starts (helpful for local testing)
+// WARNING: this prints the password to the console. Only use for local/backoffice debugging.
+console.log('Admin password (active):', ADMIN_PASSWORD ? ADMIN_PASSWORD : '(not set)');
 
 const upload = multer({ dest: IMG_DIR });
 const app = express();
@@ -38,6 +44,11 @@ app.use(session({
 
 // serve the site statically
 app.use('/', express.static(APP_ROOT));
+
+// Ensure direct GET requests to /admin, /admin/ or /admin/login return the admin UI
+app.get(['/admin', '/admin/', '/admin/login'], (req, res) => {
+  res.sendFile(path.join(APP_ROOT, 'admin.html'));
+});
 
 function requireAuth(req, res, next) {
   if (req.session && req.session.authenticated) return next();
