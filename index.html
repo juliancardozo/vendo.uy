@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Venta de muebles y electrodomésticos | Casa Médanos</title>
+  <meta name="description" content="Listado de muebles y electrodomésticos en venta. Precios claros, categorías y ambientes para compartir fácilmente." />
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --card: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+      --chip: #f3f4f6;
+      --ok: #166534;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(32px, 5vw, 52px); line-height: 1.05; }
+    .subtitle { color: var(--muted); font-size: 18px; max-width: 760px; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .stat small { display: block; color: var(--muted); margin-bottom: 6px; }
+    .stat strong { font-size: 28px; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin: 28px 0 16px;
+    }
+    .chips, .rooms {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button.filter {
+      border: 1px solid var(--line);
+      background: var(--chip);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.filter.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .search {
+      min-width: 260px;
+      flex: 1;
+      max-width: 360px;
+    }
+    .search input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      font-size: 15px;
+      background: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .price {
+      white-space: nowrap;
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #f9fafb;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .contact {
+      margin-top: 34px;
+      background: #0f172a;
+      color: white;
+      border-radius: 24px;
+      padding: 28px;
+    }
+    .contact p { color: rgba(255,255,255,0.8); max-width: 760px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+    .cta {
+      display: inline-block;
+      text-decoration: none;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+    }
+    .cta.primary { background: white; color: #0f172a; }
+    .footer { color: var(--muted); font-size: 13px; margin-top: 18px; }
+    .empty {
+      padding: 28px;
+      background: white;
+      border: 1px dashed var(--line);
+      border-radius: 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Venta de muebles y electrodomésticos</h1>
+      <p class="subtitle">Estoy vendiendo artículos de mi casa. Armé este catálogo para compartirlo fácil por WhatsApp, redes o con amigos. Los precios están en pesos uruguayos.</p>
+      <div class="stats">
+        <div class="stat"><small>Artículos publicados</small><strong id="totalItems">0</strong></div>
+        <div class="stat"><small>Valor total publicado</small><strong id="totalPrice">$ 0</strong></div>
+        <div class="stat"><small>Categorías</small><strong id="totalCategories">0</strong></div>
+        <div class="stat"><small>Ambientes</small><strong id="totalRooms">0</strong></div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div>
+        <div class="chips" id="categoryFilters"></div>
+        <div class="rooms" id="roomFilters" style="margin-top:8px"></div>
+      </div>
+      <div class="search">
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, categoría o ambiente" />
+      </div>
+    </div>
+
+    <section class="grid" id="productGrid"></section>
+
+    <section class="contact">
+      <h2 style="margin-top:0">¿Te interesa algo?</h2>
+      <p>
+        Escribime y coordinamos. Podés preguntarme por medidas, estado del artículo, forma de retiro o si querés llevar varios juntos.
+      </p>
+      <div class="cta-row">
+        <a class="cta primary" href="https://wa.me/59800000000?text=Hola%2C%20vi%20tu%20cat%C3%A1logo%20de%20muebles%20y%20electrodom%C3%A9sticos%20y%20quiero%20consultarte." target="_blank" rel="noopener">Consultar por WhatsApp</a>
+        <a class="cta" href="mailto:tuemail@ejemplo.com?subject=Consulta%20por%20cat%C3%A1logo%20de%20venta">Consultar por email</a>
+      </div>
+      <div class="footer">
+        Editá estos botones con tu número real y tu email antes de publicarlo.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const products = [
+      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño' },
+      { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño' },
+      { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina' },
+      { name: 'Microondas', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Tostadora', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Jarra eléctrica', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina' },
+      { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio' },
+      { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio' },
+      { name: 'Mesa de luz', price: 1000, original: 1400, category: 'Mueble', room: 'Dormitorio' },
+      { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
+      { name: 'Ropero blanco mediano 2 puertas', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
+      { name: 'Modular horizontal 1x2 mts', price: 1000, original: 1400, category: 'Mueble', room: 'Escritorio' },
+      { name: 'TV amurado y soporte', price: 2500, original: 3500, category: 'Electrodoméstico', room: 'Living' },
+      { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living' },
+      { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living' },
+      { name: 'Sillón', price: 1000, original: 1400, category: 'Mueble', room: 'Living' },
+      { name: 'Mesa', price: 1000, original: 1400, category: 'Mueble', room: 'Living' },
+      { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living' }
+    ];
+
+    const formatUYU = value => new Intl.NumberFormat('es-UY', {
+      style: 'currency',
+      currency: 'UYU',
+      maximumFractionDigits: 0
+    }).format(value);
+
+    const categories = ['Todos', ...new Set(products.map(p => p.category))];
+    const rooms = ['Todos', ...new Set(products.map(p => p.room))];
+
+    let selectedCategory = 'Todos';
+    let selectedRoom = 'Todos';
+    let search = '';
+
+    const productGrid = document.getElementById('productGrid');
+    const categoryFilters = document.getElementById('categoryFilters');
+    const roomFilters = document.getElementById('roomFilters');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderStats() {
+      document.getElementById('totalItems').textContent = products.length;
+      document.getElementById('totalPrice').textContent = formatUYU(products.reduce((acc, p) => acc + p.price, 0));
+      document.getElementById('totalCategories').textContent = new Set(products.map(p => p.category)).size;
+      document.getElementById('totalRooms').textContent = new Set(products.map(p => p.room)).size;
+    }
+
+    function makeFilterButton(label, onClick, active) {
+      const btn = document.createElement('button');
+      btn.className = 'filter' + (active ? ' active' : '');
+      btn.textContent = label;
+      btn.onclick = onClick;
+      return btn;
+    }
+
+    function renderFilters() {
+      categoryFilters.innerHTML = '';
+      roomFilters.innerHTML = '';
+
+      categories.forEach(cat => {
+        categoryFilters.appendChild(makeFilterButton(cat, () => {
+          selectedCategory = cat;
+          renderFilters();
+          renderProducts();
+        }, selectedCategory === cat));
+      });
+
+      rooms.forEach(room => {
+        roomFilters.appendChild(makeFilterButton(room, () => {
+          selectedRoom = room;
+          renderFilters();
+          renderProducts();
+        }, selectedRoom === room));
+      });
+    }
+
+    function renderProducts() {
+      const filtered = products.filter(p => {
+        const categoryOk = selectedCategory === 'Todos' || p.category === selectedCategory;
+        const roomOk = selectedRoom === 'Todos' || p.room === selectedRoom;
+        const text = `${p.name} ${p.category} ${p.room}`.toLowerCase();
+        const searchOk = !search || text.includes(search.toLowerCase());
+        return categoryOk && roomOk && searchOk;
+      });
+
+      if (!filtered.length) {
+        productGrid.innerHTML = '<div class="empty">No encontré artículos con ese filtro. Probá limpiar la búsqueda o cambiar categoría/ambiente.</div>';
+        return;
+      }
+
+      productGrid.innerHTML = filtered.map(p => {
+        const discount = Math.round((1 - p.price / p.original) * 100);
+        return `
+          <article class="card">
+            <div class="topline">
+              <h3 class="title">${p.name}</h3>
+              <div class="price">${formatUYU(p.price)}</div>
+            </div>
+            <div class="meta">
+              <span class="badge">${p.category}</span>
+              <span class="badge">${p.room}</span>
+              <span class="badge">Aprox. ${discount}% menos</span>
+            </div>
+            <div class="note">Valor de referencia: <strong>${formatUYU(p.original)}</strong></div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      search = e.target.value;
+      renderProducts();
+    });
+
+    renderStats();
+    renderFilters();
+    renderProducts();
+  </script>
+</body>
+</html>
