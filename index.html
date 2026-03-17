@@ -7,34 +7,40 @@
   <meta name="description" content="Listado de muebles y electrodomésticos en venta. Precios claros, categorías y ambientes para compartir fácilmente." />
   <style>
     :root {
-      --bg: #fff7ec;
-      --bg-accent: #dff6ff;
-      --card: #fffdf7;
-      --text: #1d1b16;
-      --muted: #6b6156;
-      --line: #ffe0c2;
-      --accent: #0ea5e9;
-      --chip: rgba(14, 165, 233, 0.12);
-      --ok: #0891b2;
-      --sun: #fbbf24;
-      --sand: #ffd9a0;
-      --dune-1: #ffc58a;
-      --dune-2: #ff9e73;
-      --sea-1: #7dd3fc;
-      --sea-2: #38bdf8;
-      --tech-glow: rgba(94, 234, 212, 0.45);
-      --tech-grid: rgba(255, 255, 255, 0.35);
+      --bg: #030712;
+      --bg-accent: #050d1f;
+      --card: rgba(15,23,42,0.7);
+      --card-strong: rgba(15,23,42,0.85);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --line: rgba(148,163,184,0.2);
+      --accent: #38bdf8;
+      --accent-2: #a855f7;
+      --chip: rgba(56,189,248,0.15);
+      --chip-border: rgba(56,189,248,0.4);
+      --ok: #22d3ee;
+      --sun: #fde047;
+      --sand: #f97316;
+      --dune-1: #3730a3;
+      --dune-2: #7c3aed;
+      --sea-1: #0ea5e9;
+      --sea-2: #22d3ee;
+      --tech-glow: rgba(99,102,241,0.45);
+      --tech-grid: rgba(148,163,184,0.12);
+      --blur: 28px;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Space Grotesk", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at 50% -150%, rgba(255, 255, 255, 0.45), transparent 60%),
-        linear-gradient(180deg, var(--bg) 0%, #ffe9cc 40%, var(--bg-accent) 100%);
+        radial-gradient(circle at 15% 15%, rgba(124,58,237,0.28), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgba(14,165,233,0.25), transparent 40%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-accent) 45%, #020617 100%);
       color: var(--text);
-      line-height: 1.45;
+      line-height: 1.5;
       min-height: 100vh;
+      letter-spacing: 0.01em;
       position: relative;
       overflow-x: hidden;
     }
@@ -48,26 +54,92 @@
     }
     body::before {
       background:
-        radial-gradient(circle at 18% -12%, rgba(251,191,36,0.95), transparent 52%),
-        radial-gradient(circle at 80% -5%, rgba(94,234,212,0.55), transparent 60%),
-        linear-gradient(180deg, transparent 0 60%, rgba(255,152,106,0.2) 75%, transparent 100%);
-      opacity: 0.95;
+        radial-gradient(circle at 20% 0%, rgba(59,130,246,0.28), transparent 55%),
+        radial-gradient(circle at 90% 20%, rgba(248,113,113,0.22), transparent 40%),
+        conic-gradient(from 120deg, rgba(14,165,233,0.25), transparent 60%);
+      opacity: 0.65;
+      filter: blur(8px);
     }
     body::after {
       background:
-        repeating-linear-gradient(115deg, rgba(255,255,255,0.08) 0, rgba(255,255,255,0.08) 1px, transparent 18px),
-        radial-gradient(ellipse at 18% 120%, rgba(255,184,122,0.45) 0, transparent 60%),
-        radial-gradient(ellipse at 72% 125%, rgba(255,138,124,0.35) 0, transparent 65%),
-        radial-gradient(ellipse at 50% 140%, rgba(56,189,248,0.35) 0, transparent 70%);
+        radial-gradient(circle at 50% 200%, rgba(124,58,237,0.4), transparent 65%),
+        repeating-linear-gradient(115deg, rgba(148,163,184,0.08) 0 1px, transparent 1px 28px);
       mix-blend-mode: screen;
-      opacity: 0.85;
+      opacity: 0.6;
     }
     .wrap {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px;
+      padding: clamp(20px, 5vw, 48px);
       position: relative;
       z-index: 1;
+    }
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      background: rgba(15,23,42,0.55);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 16px 24px;
+      backdrop-filter: blur(var(--blur));
+      box-shadow: 0 25px 50px rgba(2,6,23,0.55);
+      margin-bottom: 28px;
+    }
+    .top-nav__brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .brand-pill {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+    .top-nav__brand strong {
+      font-size: 18px;
+      color: var(--text);
+    }
+    .top-nav__actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-pill {
+      border-radius: 999px;
+      padding: 10px 18px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      background: rgba(15,23,42,0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-pill.highlight {
+      background: linear-gradient(120deg, rgba(56,189,248,0.4), rgba(168,85,247,0.45));
+      border-color: transparent;
+      box-shadow: 0 10px 30px rgba(14,165,233,0.35);
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+    .live-dot::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(56,189,248,0.6);
+      animation: pulse 2.2s infinite;
     }
     .wave-motif {
       position: absolute;
@@ -259,6 +331,7 @@
       font-size: 20px;
       font-weight: 700;
       margin: 0;
+      color: #000000;
     }
     .price {
       white-space: nowrap;
@@ -445,27 +518,27 @@ Los precios están en pesos uruguayos.</p>
   <script>
     // products with images mapped from img/ (automatically assigned where matching filename exists)
     const products = [
-      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño' },
-      { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/lavarropa_james.svg' },
-      { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/cocina_gas.svg' },
-      { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/heladera.svg' },
-      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/mesa_de_trabajo_180.svg' },
-      { name: 'Microondas', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/microondas.svg' },
-      { name: 'Tostadora', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/tostadora.svg' },
-      { name: 'Jarra eléctrica', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina' },
-      { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/cocina_gas.svg' },
-      { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Mesa de luz', price: 1000, original: 1400, category: 'Mueble', room: 'Dormitorio' },
-      { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
-      { name: 'Ropero blanco mediano 2 puertas', price: 3000, original: 4200, category: 'Mueble', room: 'Escritorio' },
-      { name: 'Modular horizontal 1x2 mts', price: 1000, original: 1400, category: 'Mueble', room: 'Escritorio' },
-      { name: 'TV amurado y soporte', price: 2500, original: 3500, category: 'Electrodoméstico', room: 'Living' },
-      { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living' },
-      { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living' },
-      { name: 'Sillón', price: 1000, original: 1400, category: 'Mueble', room: 'Living', image: 'img/sillon_2plazas.svg' },
-      { name: 'Mesa', price: 1000, original: 1400, category: 'Mueble', room: 'Living' },
-      { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living', image: 'img/mesa_vidrio_negra.svg' }
+      { name: 'Calefón', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/calefon-thumb.jpg' },
+      { name: 'Lavarropa JAMES', price: 4000, original: 5600, category: 'Electrodoméstico', room: 'Baño', image: 'img/reales/thumbs/lavarropa_james-thumb.jpg' },
+      { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
+      { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg' },
+      { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg' },
+      { name: 'Microondas', price: 1700, original: 2400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
+      { name: 'Tostadora', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/tostadora-thumb.jpg' },
+      { name: 'Jarra eléctrica', price: 1000, original: 1400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
+      { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodoméstico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
+      { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/roperoDormitorio-thumb.jpg' },
+      { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/sommier-thumb.jpg' },
+      { name: 'Mesa de luz', price: 1600, original: 2100, category: 'Mueble', room: 'Dormitorio' },
+      { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3500, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/reales/thumbs/roperos-thumb.jpg' },
+      { name: 'Ropero blanco mediano 2 puertas', price: 3500, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/reales/thumbs/roperos-thumb.jpg' },
+      { name: 'Modular horizontal 1x2 mts', price: 1600, original: 2100, category: 'Mueble', room: 'Escritorio' },
+      { name: 'TV amurado y soporte', price: 2900, original: 3500, category: 'Electrodoméstico', room: 'Living', image: 'img/reales/thumbs/televisor-thumb.jpg' },
+      { name: 'Biblioteca madera y hierro', price: 4000, original: 5600, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/repisa-thumb.jpg' },
+      { name: 'Mesa ratona', price: 2000, original: 2800, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/ratona-thumb.jpg' },
+      { name: 'Sillón', price: 1700, original: 2300, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/sillon-thumb.jpg' },
+      { name: 'Mesa', price: 1700, original: 2200, category: 'Mueble', room: 'Living' },
+      { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/mesaVidrioNegra-thumb.jpg' }
     ];
 
     const DEFAULT_PRODUCT_IMAGE = 'img/voluntad.svg';
