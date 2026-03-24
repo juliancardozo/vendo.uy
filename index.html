@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#030712" />
   <title>Venta de muebles y electrodomesticos usados | Casa Medanos</title>
   <meta name="description" content="Listado de muebles y electrodomesticos en venta. Precios claros, categorias y ambientes para compartir facilmente." />
+  <link rel="preload" as="image" href="img/time-to-chill.svg" />
   <style>
     :root {
       --bg: #030712;
@@ -77,73 +79,6 @@
       position: relative;
       z-index: 1;
     }
-    .top-nav {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: center;
-      background: rgba(15,23,42,0.55);
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      padding: 16px 24px;
-      backdrop-filter: blur(var(--blur));
-      box-shadow: 0 25px 50px rgba(2,6,23,0.55);
-      margin-bottom: 28px;
-    }
-    .top-nav__brand {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .brand-pill {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-    }
-    .top-nav__brand strong {
-      font-size: 18px;
-      color: var(--text);
-    }
-    .top-nav__actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .nav-pill {
-      border-radius: 999px;
-      padding: 10px 18px;
-      border: 1px solid var(--line);
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 600;
-      background: rgba(15,23,42,0.6);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .nav-pill.highlight {
-      background: linear-gradient(120deg, rgba(56,189,248,0.4), rgba(168,85,247,0.45));
-      border-color: transparent;
-      box-shadow: 0 10px 30px rgba(14,165,233,0.35);
-    }
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      position: relative;
-      display: inline-block;
-    }
-    .live-dot::after {
-      content: "";
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      border: 1px solid rgba(56,189,248,0.6);
-      animation: pulse 2.2s infinite;
-    }
     .wave-motif {
       position: absolute;
       top: -80px;
@@ -214,12 +149,18 @@
     .hero-logo {
       flex: 0 0 240px;
       max-width: 320px;
+      aspect-ratio: 4 / 3;
       background: rgba(255,255,255,0.5);
       border-radius: 24px;
       padding: 16px;
       box-shadow: inset 0 0 0 1px rgba(14,165,233,0.15), 0 12px 28px rgba(14,165,233,0.2);
     }
-    .hero-logo img { width: 100%; display: block; }
+    .hero-logo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
     .hero::before {
       content: "";
       position: absolute;
@@ -339,6 +280,8 @@
       flex-direction: column;
       gap: 12px;
       backdrop-filter: blur(4px);
+      content-visibility: auto;
+      contain-intrinsic-size: 420px;
     }
     .card--featured {
       grid-column: span 1;
@@ -404,6 +347,8 @@
       flex-wrap: wrap;
       gap: 18px;
       box-shadow: 0 12px 30px rgba(5,20,36,0.15);
+      content-visibility: auto;
+      contain-intrinsic-size: 320px;
     }
     .map-card__info {
       flex: 1 1 220px;
@@ -480,13 +425,17 @@
       border-radius: 16px;
       overflow: hidden;
       position: relative;
+      aspect-ratio: 4 / 3;
       margin-bottom: 10px;
+      background: linear-gradient(135deg, rgba(226,232,240,0.95), rgba(191,219,254,0.9));
       box-shadow: 0 8px 20px rgba(0,0,0,0.06);
     }
     .product-media img {
       width: 100%;
+      height: 100%;
       display: block;
       border-radius: 16px;
+      object-fit: cover;
       transition: opacity 0.3s ease, filter 0.3s ease;
     }
     .product-media__badge {
@@ -891,7 +840,7 @@ Los precios estan en pesos uruguayos.</p>
         <div class="rooms" id="roomFilters" style="margin-top:8px"></div>
       </div>
       <div class="search">
-        <input type="text" id="searchInput" placeholder="Buscar por nombre, categoria o ambiente" />
+        <input type="search" id="searchInput" placeholder="Buscar por nombre, categoria o ambiente" aria-label="Buscar productos por nombre, categoria o ambiente" autocomplete="off" />
       </div>
     </div>
 
