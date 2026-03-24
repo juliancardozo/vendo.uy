@@ -1,0 +1,79 @@
+{
+  "name": "Notification Service - Sales Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "notification-service-sales-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "notif-sales-webhook",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        280
+      ],
+      "webhookId": "notification-service-sales-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\\nconst text = String(body.text || '').trim();\\nconst lead = body.lead ?? {};\\nconst email = String(lead.email || body.email || '').trim().toLowerCase();\\nconst name = String(lead.name || body.name || '').trim();\\nconst company = String(lead.company || body.company || '').trim();\\nconst channels = Array.isArray(body.channels) ? body.channels.map(value => String(value).toLowerCase()) : [];\\nconst monthlyContacts = Number(body.monthlyContacts || lead.monthlyContacts || 0);\\nconst whatsappUrl = body.whatsappUrl || 'https://wa.me/59899576144?text=Hola%2C%20quiero%20una%20demo%20del%20servicio%20de%20notificaciones.';\\n\\nconst normalize = value => String(value || '').normalize('NFD').replace(/[\\\\u0300-\\\\u036f]/g, '').toLowerCase();\\nconst query = normalize(text);\\n\\nconst useCases = [\\n  { key: 'ecommerce', label: 'ecommerce', terms: ['tienda', 'ecommerce', 'shopify', 'woocommerce', 'pedido', 'carrito'] },\\n  { key: 'operations', label: 'operaciones', terms: ['operacion', 'operaciones', 'logistica', 'entrega', 'reparto', 'turnos'] },\\n  { key: 'collections', label: 'cobranzas', terms: ['cobranza', 'cobranzas', 'pago', 'vencimiento', 'deuda', 'recordatorio'] },\\n  { key: 'alerts', label: 'alertas internas', terms: ['alerta', 'incidente', 'caida', 'sistema', 'monitoreo', 'devops'] },\\n  { key: 'marketing', label: 'marketing automatizado', terms: ['marketing', 'campana', 'campana', 'promocion', 'promo', 'newsletter'] }\\n];\\n\\nconst matchedUseCase = useCases.find(entry => entry.terms.some(term => query.includes(normalize(term))));\\nconst channelScore = channels.length || (/whatsapp|email|sms|push/.test(query) ? 2 : 1);\\nconst sizeScore = monthlyContacts >= 50000 ? 3 : monthlyContacts >= 10000 ? 2 : monthlyContacts > 0 ? 1 : 0;\\nconst urgencyScore = /urgente|ya|hoy|esta semana|cuanto antes/.test(query) ? 2 : 0;\\nconst score = channelScore + sizeScore + urgencyScore;\\n\\nconst plans = [\\n  { key: 'starter', label: 'Starter', price: 'USD 149/mes', fit: 'equipos chicos con una automatizacion principal y hasta 2 canales' },\\n  { key: 'growth', label: 'Growth', price: 'USD 349/mes', fit: 'operaciones comerciales con varios flujos, CRM y mensajes transaccionales' },\\n  { key: 'scale', label: 'Scale', price: 'USD 790/mes', fit: 'volumen alto, varios sistemas y observabilidad completa' }\\n];\\n\\nconst recommendedPlan = score >= 5 ? plans[2] : score >= 3 ? plans[1] : plans[0];\\nconst useCaseLabel = matchedUseCase ? matchedUseCase.label : 'notificaciones automatizadas';\\n\\nlet reply = '';\\nlet next_actions = [\\n  { label: 'Pedir demo', prompt: 'Quiero una demo del servicio de notificaciones' },\\n  { label: 'Ver plan recomendado', prompt: 'Que plan me recomendas para mi operacion?' },\\n  { label: 'WhatsApp', type: 'url', url: whatsappUrl }\\n];\\n\\nif (!email) {\\n  return [{ json: { success: false, requires_email: true, reply: 'Antes de seguir necesito tu email para enviarte una propuesta y registrar la oportunidad.', plan: null, use_case: useCaseLabel, next_actions, whatsapp_url: whatsappUrl } }];\\n}\\n\\nif (!text) {\\n  reply = `Puedo ayudarte a vender notificaciones por WhatsApp, email, SMS o alertas internas. Para ${useCaseLabel}, el mejor punto de partida hoy es ${recommendedPlan.label}.`;\\n} else if (/precio|plan|cuanto cuesta|costa/.test(query)) {\\n  reply = `Para ${useCaseLabel}, te recomiendo ${recommendedPlan.label} (${recommendedPlan.price}). Encaja bien en ${recommendedPlan.fit}.`;\\n} else if (/demo|reunion|llamada/.test(query)) {\\n  reply = `Perfecto. Para ${company || 'tu equipo'}, la demo conviene enfocarla en ${useCaseLabel} con ${channels.length ? channels.join(', ') : 'los canales que hoy esten evaluando'}.`;\\n  next_actions = [\\n    { label: 'Seguir por WhatsApp', type: 'url', url: whatsappUrl },\\n    { label: 'Enviar propuesta', prompt: 'Quiero una propuesta comercial' },\\n    { label: 'Ver integraciones', prompt: 'Que integraciones soportan?' }\\n  ];\\n} else if (/integracion|integraciones|n8n|api|webhook/.test(query)) {\\n  reply = 'El servicio puede montarse sobre n8n, webhooks, CRMs, e-commerce y herramientas internas. La clave es definir eventos, canales y reglas de entrega.';\\n} else {\\n  reply = `Veo una oportunidad clara para ${useCaseLabel}. Para ${company || 'tu negocio'}, hoy priorizaria ${recommendedPlan.label} porque permite activar notificaciones utiles sin sobreingenieria.`;\\n}\\n\\nconst staticData = $getWorkflowStaticData('global');\\nstaticData.leads = Array.isArray(staticData.leads) ? staticData.leads : [];\\nstaticData.leads.unshift({\\n  created_at: new Date().toISOString(),\\n  lead: { name, email, company },\\n  text,\\n  channels,\\n  monthly_contacts: monthlyContacts,\\n  use_case: useCaseLabel,\\n  recommended_plan: recommendedPlan,\\n  score\\n});\\nstaticData.leads = staticData.leads.slice(0, 500);\\n\\nreturn [{\\n  json: {\\n    success: true,\\n    requires_email: false,\\n    reply,\\n    use_case: useCaseLabel,\\n    recommended_plan: recommendedPlan,\\n    next_actions,\\n    registry_size: staticData.leads.length,\\n    whatsapp_url: whatsappUrl\\n  }\\n}];"
+      },
+      "id": "notif-sales-code",
+      "name": "Qualify Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "notif-sales-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        860,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Qualify Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qualify Lead": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

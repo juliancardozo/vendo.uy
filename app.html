@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casa Medanos Mission Control</title>
+  <meta name="description" content="Panel de dominio, catalogo, workflow y gestion simple de usuarios para Casa Medanos." />
+  <style>
+    :root {
+      --bg: #04121f;
+      --bg-2: #0b2136;
+      --panel: rgba(8, 21, 35, 0.88);
+      --panel-soft: rgba(255, 255, 255, 0.05);
+      --panel-light: rgba(248, 250, 252, 0.97);
+      --text: #e5eef8;
+      --text-dark: #0f172a;
+      --muted: #8ea2b8;
+      --line: rgba(148, 163, 184, 0.16);
+      --accent: #35d0b6;
+      --accent-2: #f97316;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --good: #22c55e;
+      --shadow: 0 28px 80px rgba(1, 8, 16, 0.34);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(53, 208, 182, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.18), transparent 24%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    }
+    a { color: inherit; }
+    [hidden] { display: none !important; }
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+    .topbar,
+    .section-head,
+    .role-card__top,
+    .chip-row,
+    .timeline-item__top,
+    .user-card__top,
+    .user-card__meta,
+    .user-card__actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .topbar { margin-bottom: 24px; }
+    .brand strong,
+    .brand span { display: block; }
+    .brand strong {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: rgba(229, 238, 248, 0.76);
+      font-size: 12px;
+    }
+    .brand span {
+      margin-top: 6px;
+      font-size: clamp(26px, 4vw, 46px);
+      line-height: 0.95;
+    }
+    .topbar__actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .button,
+    .ghost-link {
+      border-radius: 999px;
+      padding: 12px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .button--primary {
+      background: linear-gradient(135deg, var(--accent), #14b8a6);
+      color: #03211d;
+      border-color: transparent;
+    }
+    .button--light {
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text-dark);
+    }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+    .panel--light {
+      background: var(--panel-light);
+      color: var(--text-dark);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 18px;
+    }
+    .hero-copy,
+    .login-card,
+    .metric,
+    .workspace-card,
+    .timeline-card,
+    .products-card,
+    .users-card,
+    .editor-card {
+      padding: 24px;
+    }
+    .eyebrow {
+      color: #83ffe9;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    h1, h2, h3, p { margin: 0; }
+    .hero-copy h1 {
+      margin-top: 12px;
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 0.95;
+      max-width: 12ch;
+    }
+    .hero-copy p {
+      margin-top: 16px;
+      max-width: 62ch;
+      color: rgba(229, 238, 248, 0.74);
+      font-size: 16px;
+    }
+    .hero-points,
+    .role-grid,
+    .metrics,
+    .workspace-grid,
+    .story-grid,
+    .products-grid,
+    .user-list,
+    .timeline-list,
+    .compact-list,
+    form {
+      display: grid;
+      gap: 12px;
+    }
+    .hero-points {
+      margin-top: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .hero-points div,
+    .role-card,
+    .mini-panel,
+    .timeline-item,
+    .product-line,
+    .user-card,
+    .muted-box {
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .hero-points strong,
+    .hero-points span,
+    .role-card strong,
+    .role-card span,
+    .metric strong,
+    .metric small,
+    .metric span,
+    .user-card__name strong,
+    .user-card__name span,
+    .meta-chip,
+    .label-stack strong,
+    .label-stack span {
+      display: block;
+    }
+    .hero-points span,
+    .role-card span,
+    .meta-chip,
+    .helper,
+    .muted-box,
+    .mini-panel p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .login-card {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+    .login-card__hint {
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.04);
+      border: 1px dashed rgba(15, 23, 42, 0.12);
+      font-size: 14px;
+      color: rgba(15, 23, 42, 0.72);
+    }
+    .login-card__actions {
+      display: grid;
+      gap: 10px;
+    }
+    label span {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      background: rgba(248, 250, 252, 0.96);
+      padding: 12px 14px;
+      font: inherit;
+      color: #0f172a;
+    }
+    textarea {
+      min-height: 108px;
+      resize: vertical;
+    }
+    .status {
+      min-height: 20px;
+      font-size: 14px;
+    }
+    .status--error { color: #fecaca; }
+    .status--ok { color: #86efac; }
+    .code-box {
+      margin: 0;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(2, 6, 23, 0.48);
+      color: #d8f3ff;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: auto;
+      font-family: "Cascadia Code", "Consolas", monospace;
+    }
+    .metrics {
+      margin-top: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .metric small {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+    .metric strong {
+      font-size: 34px;
+    }
+    .metric span {
+      margin-top: 8px;
+      color: rgba(229, 238, 248, 0.72);
+      font-size: 13px;
+    }
+    .workspace-grid {
+      grid-template-columns: repeat(12, 1fr);
+      margin-top: 18px;
+    }
+    .workspace-card--role { grid-column: span 4; }
+    .workspace-card--domain { grid-column: span 4; }
+    .workspace-card--workflow { grid-column: span 4; }
+    .workspace-card--vision { grid-column: span 6; }
+    .workspace-card--checklist { grid-column: span 6; }
+    .story-grid {
+      margin-top: 18px;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+    }
+    .products-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+      margin-top: 18px;
+    }
+    .seller-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      margin-top: 18px;
+    }
+    .product-editor,
+    .seller-focus-card {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .catalog-board {
+      display: grid;
+      gap: 12px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .pill[data-role="owner"] { background: rgba(250, 204, 21, 0.16); color: #fde047; }
+    .pill[data-role="admin"] { background: rgba(96, 165, 250, 0.16); color: #93c5fd; }
+    .pill[data-role="agent"] { background: rgba(45, 212, 191, 0.16); color: #99f6e4; }
+    .pill[data-state="active"] { color: #86efac; }
+    .pill[data-state="iterando"] { color: #fde68a; }
+    .pill[data-state="pendiente"] { color: #fdba74; }
+    .pill[data-status="active"] { color: #86efac; }
+    .pill[data-status="invited"] { color: #fde68a; }
+    .pill[data-status="disabled"] { color: #fca5a5; }
+    .compact-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .compact-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .compact-list li:last-child { border-bottom: 0; }
+    .timeline-item__top strong,
+    .product-line strong {
+      font-size: 14px;
+    }
+    .timeline-item__top span,
+    .product-line span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .product-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .link-button {
+      border: 0;
+      background: transparent;
+      color: #7dd3fc;
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+      font-weight: 700;
+    }
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .full { grid-column: 1 / -1; }
+    @media (max-width: 1100px) {
+      .workspace-card--role,
+      .workspace-card--domain,
+      .workspace-card--workflow,
+      .workspace-card--vision,
+      .workspace-card--checklist {
+        grid-column: span 12;
+      }
+    }
+    @media (max-width: 900px) {
+      .hero,
+      .story-grid,
+      .products-grid,
+      .seller-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 20px 12px 40px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .editor-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <strong>Casa Medanos</strong>
+        <span>Mission Control</span>
+      </div>
+      <div class="topbar__actions">
+        <a class="ghost-link" href="/">Ver catalogo publico</a>
+        <button class="button" id="logoutButton" type="button" hidden>Cerrar sesion</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" id="welcomeView">
+        <article class="panel hero-copy">
+          <div class="eyebrow">Dominio, catalogo, workflow y memoria del repo</div>
+          <h1>Un panel que entiende la historia del proyecto.</h1>
+          <p>
+            Este panel interpreta el repositorio como una máquina comercial viva: el dominio publica, el catálogo vende,
+            el workflow responde y el git log conserva la memoria de cada mejora, precio y producto vendido.
+          </p>
+          <div class="hero-points">
+            <div>
+              <strong>Owner</strong>
+              <span>Define dominio, estrategia, usuarios y arquitectura comercial.</span>
+            </div>
+            <div>
+              <strong>Automatizador n8n</strong>
+              <span>Crea y mantiene los workflows que conectan consultas, catálogo y automatizaciones.</span>
+            </div>
+            <div>
+              <strong>Vendedor</strong>
+              <span>Administra el catálogo, atiende consultas y empuja el cierre comercial.</span>
+            </div>
+          </div>
+          <div class="metrics">
+            <article class="panel metric">
+              <small>Idea base</small>
+              <strong>Repo vivo</strong>
+              <span>El historial ya cuenta ventas, automatización y mejoras de publicación.</span>
+            </article>
+            <article class="panel metric">
+              <small>Innovacion</small>
+              <strong>Memoria comercial</strong>
+              <span>Git pasa de ser técnico a convertirse en narrativa operativa del negocio.</span>
+            </article>
+          </div>
+        </article>
+
+        <aside class="panel panel--light login-card" id="loginPanel">
+          <div>
+            <h2>Entrar al panel</h2>
+            <p style="margin-top:8px;color:rgba(15,23,42,0.72)">Iniciá sesión y vas directo a tu consola operativa.</p>
+          </div>
+          <div class="login-card__hint">
+            <strong>Modo seguro</strong><br />
+            En produccion no se muestran ni se aceptan cuentas demo.<br />
+            En desarrollo local puedes revisar las cuentas seed en <code>data/users.json</code>.
+          </div>
+          <form id="loginForm">
+            <label>
+              <span>Email</span>
+              <input id="loginEmail" type="email" autocomplete="username" required />
+            </label>
+            <label>
+              <span>Tenant slug opcional</span>
+              <input id="loginTenantSlug" type="text" autocomplete="organization" placeholder="casa-medanos" />
+            </label>
+            <label>
+              <span>Contrasena</span>
+              <input id="loginPassword" type="password" autocomplete="current-password" required />
+            </label>
+            <button class="button button--primary" type="submit">Ingresar</button>
+          </form>
+          <div class="login-card__actions">
+            <button class="button button--light" id="googleLoginButton" type="button" hidden>Continuar con Google</button>
+            <div class="helper" id="googleLoginHelper" hidden>Completa el tenant si no usas el principal. El alta automatica por Google crea usuarios vendedores por defecto.</div>
+          </div>
+          <div class="status" id="loginStatus" aria-live="polite"></div>
+        </aside>
+      </section>
+
+      <section id="dashboardView" hidden>
+        <div class="metrics">
+          <article class="panel metric">
+            <small>Usuarios</small>
+            <strong id="metricUsers">0</strong>
+            <span id="metricUsersLabel">Cuentas y permisos del equipo.</span>
+          </article>
+          <article class="panel metric">
+            <small>Productos activos</small>
+            <strong id="metricProducts">0</strong>
+            <span id="metricProductsLabel">Inventario visible para publicar.</span>
+          </article>
+          <article class="panel metric">
+            <small>Vendidos</small>
+            <strong id="metricSold">0</strong>
+            <span id="metricSoldLabel">Memoria real del movimiento comercial.</span>
+          </article>
+          <article class="panel metric">
+            <small>Nodos workflow</small>
+            <strong id="metricWorkflow">0</strong>
+            <span id="metricWorkflowLabel">Automatización actual del asistente.</span>
+          </article>
+        </div>
+
+        <section class="workspace-grid">
+          <article class="panel workspace-card workspace-card--role">
+            <div class="section-head">
+              <div>
+                <h2>Rol actual</h2>
+                <p>Interpretación simple de permisos para este proyecto.</p>
+              </div>
+              <span class="pill" id="currentRolePill" data-role="agent">agent</span>
+            </div>
+            <div class="role-grid" id="rolesGrid"></div>
+            <div class="muted-box" id="currentSessionBox">Sesion sin cargar.</div>
+          </article>
+
+          <article class="panel workspace-card workspace-card--domain" id="domainSection">
+            <div class="section-head">
+              <div>
+                <h2>Dominio y publicación</h2>
+                <p>Lo mínimo para operar `vendo.uy` sin perder el control.</p>
+              </div>
+              <span class="pill" id="domainStatusPill" data-state="iterando">iterando</span>
+            </div>
+            <form id="workspaceForm">
+              <div class="editor-grid">
+                <label>
+                  <span>Dominio</span>
+                  <input id="domainCustomDomain" type="text" />
+                </label>
+                <label>
+                  <span>URL pública</span>
+                  <input id="domainPublicUrl" type="text" />
+                </label>
+                <label>
+                  <span>Branch de deploy</span>
+                  <input id="domainDeployBranch" type="text" />
+                </label>
+                <label>
+                  <span>Estado de publicación</span>
+                  <select id="domainPublicationStatus">
+                    <option value="iterando">Iterando</option>
+                    <option value="listo">Listo</option>
+                    <option value="publicado">Publicado</option>
+                  </select>
+                </label>
+                <label>
+                  <span>DNS</span>
+                  <select id="domainDnsStatus">
+                    <option value="pendiente">Pendiente</option>
+                    <option value="ok">OK</option>
+                  </select>
+                </label>
+                <label>
+                  <span>SSL</span>
+                  <select id="domainSslStatus">
+                    <option value="pendiente">Pendiente</option>
+                    <option value="ok">OK</option>
+                  </select>
+                </label>
+                <label class="full">
+                  <span>Foco comercial</span>
+                  <textarea id="publishingFocus"></textarea>
+                </label>
+                <label class="full">
+                  <span>Tesis del proyecto</span>
+                  <textarea id="visionThesis"></textarea>
+                </label>
+                <label class="full">
+                  <span>Siguiente experimento</span>
+                  <textarea id="visionExperiment"></textarea>
+                </label>
+              </div>
+              <button class="button button--primary" id="saveWorkspaceButton" type="submit">Guardar workspace</button>
+            </form>
+            <div class="status" id="workspaceStatus" aria-live="polite"></div>
+          </article>
+
+          <article class="panel workspace-card workspace-card--workflow" id="workflowSection">
+            <div class="section-head">
+              <div>
+                <h2>Workflow de venta</h2>
+                <p>Lo que hoy responde al asistente y organiza la consulta.</p>
+              </div>
+              <span class="pill" id="workflowActivePill" data-state="pendiente">pendiente</span>
+            </div>
+            <div class="mini-panel">
+              <div class="label-stack">
+                <strong id="workflowName">Workflow</strong>
+                <span id="workflowMeta">Sin datos</span>
+              </div>
+            </div>
+            <ul class="compact-list" id="workflowNodes"></ul>
+            <div class="muted-box" id="workflowInsightBox"></div>
+            <div class="seller-focus-card" id="workflowStudioSection" hidden>
+              <div class="mini-panel">
+                <div class="label-stack">
+                  <strong id="workflowOpsTitle">Studio del automatizador</strong>
+                  <span id="workflowOpsMeta">Cargando tablero operativo...</span>
+                </div>
+              </div>
+              <ul class="compact-list" id="workflowSignalsList"></ul>
+              <div class="user-list" id="workflowPhotoQueue"></div>
+              <div class="status" id="workflowActionStatus" aria-live="polite"></div>
+            </div>
+          </article>
+
+          <article class="panel workspace-card workspace-card--vision" id="visionSection">
+            <div class="section-head">
+              <div>
+                <h2>Innovación propuesta</h2>
+                <p>La idea fuerte que sale del git log, no de una plantilla genérica.</p>
+              </div>
+            </div>
+            <div class="mini-panel">
+              <h3 style="margin-bottom:8px">Motor de memoria comercial</h3>
+              <p>
+                Cada commit ya expresa algo del negocio: un producto nuevo, un vendido, un ajuste de precio,
+                una mejora de UX o un flujo de ventas. El salto innovador es tratar el repositorio como una base de conocimiento narrativa
+                que alimente la publicación del dominio, el chat y futuras automatizaciones.
+              </p>
+            </div>
+            <div class="mini-panel">
+              <h3 style="margin-bottom:8px">Cómo se interpreta</h3>
+              <p id="innovationSummary">Cargando narrativa del proyecto...</p>
+            </div>
+          </article>
+
+          <article class="panel workspace-card workspace-card--checklist" id="checklistSection">
+            <div class="section-head">
+              <div>
+                <h2>Checklist de lanzamiento</h2>
+                <p>Un owner necesita ver rápido qué falta para publicar sin adivinar.</p>
+              </div>
+            </div>
+            <ul class="compact-list" id="launchChecklist"></ul>
+          </article>
+        </section>
+
+        <section class="story-grid" id="storySection">
+          <article class="panel timeline-card" id="timelineSection">
+            <div class="section-head">
+              <div>
+                <h2>Historia del repo</h2>
+                <p>Lectura del git log desde que empezó el proyecto.</p>
+              </div>
+              <button class="button" id="refreshOverviewButton" type="button">Actualizar historia</button>
+            </div>
+            <div class="timeline-list" id="timelineList"></div>
+          </article>
+
+          <article class="panel products-card" id="productsSection">
+            <div class="section-head">
+              <div>
+                <h2>Publicación de productos</h2>
+                <p>Resumen del catálogo actual para decidir qué empujar.</p>
+              </div>
+            </div>
+            <div class="mini-panel">
+              <div class="label-stack">
+                <strong id="productsSummaryTitle">Catalogo activo</strong>
+                <span id="productsSummaryMeta">Sin datos</span>
+              </div>
+            </div>
+            <div class="products-grid">
+              <div>
+                <h3 style="margin-bottom:10px">Destacados</h3>
+                <div class="compact-list" id="highlightedProducts"></div>
+              </div>
+              <div>
+                <h3 style="margin-bottom:10px">Más accesibles</h3>
+                <div class="compact-list" id="cheapestProducts"></div>
+              </div>
+            </div>
+            <div class="muted-box" id="productsInsightBox"></div>
+
+            <div class="seller-grid" id="sellerWorkspaceSection">
+              <div class="seller-focus-card">
+                <div class="mini-panel">
+                  <div class="label-stack">
+                    <strong>Cabina del vendedor</strong>
+                    <span id="sellerFocusSubtitle">Cargando foco comercial...</span>
+                  </div>
+                </div>
+                <div class="mini-panel" id="sellerScoreBox">Score comercial en carga...</div>
+                <div class="mini-panel">
+                  <h3 style="margin-bottom:10px">Subir producto rapido</h3>
+                  <form id="catalogProductForm" class="product-editor">
+                    <div class="editor-grid">
+                      <label class="full">
+                        <span>Nombre</span>
+                        <input id="catalogProductName" type="text" />
+                      </label>
+                      <label>
+                        <span>Precio</span>
+                        <input id="catalogProductPrice" type="number" min="0" step="1" />
+                      </label>
+                      <label>
+                        <span>Valor de referencia</span>
+                        <input id="catalogProductOriginal" type="number" min="0" step="1" />
+                      </label>
+                      <label>
+                        <span>Categoria</span>
+                        <input id="catalogProductCategory" type="text" placeholder="Mueble, Electrodomestico..." />
+                      </label>
+                      <label>
+                        <span>Ambiente</span>
+                        <input id="catalogProductRoom" type="text" placeholder="Living, Dormitorio..." />
+                      </label>
+                      <label>
+                        <span>Estado</span>
+                        <select id="catalogProductStatus">
+                          <option value="draft">Draft</option>
+                          <option value="ready">Ready</option>
+                          <option value="active">Active</option>
+                          <option value="sold">Sold</option>
+                          <option value="archived">Archived</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Estado de foto</span>
+                        <select id="catalogProductPhotoStatus">
+                          <option value="original">Original</option>
+                          <option value="needs_ai">Needs AI</option>
+                          <option value="needs_capture">Needs Capture</option>
+                          <option value="ai_requested">AI Requested</option>
+                          <option value="ai_ready">AI Ready</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>IA preferida</span>
+                        <select id="catalogProductAiTool">
+                          <option value="nano-banana">Nano Banana</option>
+                          <option value="manual">Manual</option>
+                        </select>
+                      </label>
+                      <label class="full">
+                        <span>Imagen actual</span>
+                        <input id="catalogProductImage" type="text" placeholder="img/... o https://..." />
+                      </label>
+                      <label class="full">
+                        <span>Prompt foto IA</span>
+                        <textarea id="catalogProductPhotoPrompt" placeholder="Ej: limpiar fondo, luz natural, foco en el producto, look marketplace premium"></textarea>
+                      </label>
+                      <label class="full">
+                        <span>Descripcion breve</span>
+                        <textarea id="catalogProductDescription" placeholder="Condicion, dimensiones, detalles claves"></textarea>
+                      </label>
+                      <label class="full">
+                        <span>Argumento de venta</span>
+                        <textarea id="catalogProductSalesNote" placeholder="Por que conviene, urgencia, oferta, estado"></textarea>
+                      </label>
+                      <label class="full">
+                        <span>Angulo comercial</span>
+                        <textarea id="catalogProductLeadAngle" placeholder="Que mensaje ayuda a convertir consultas"></textarea>
+                      </label>
+                    </div>
+                    <div class="helper" id="catalogProductHint">Carga simple para vendedores: nombre, precio, foto y argumento de venta.</div>
+                    <div class="topbar__actions">
+                      <button class="button" id="catalogProductResetButton" type="button">Limpiar</button>
+                      <button class="button button--primary" type="submit">Guardar producto</button>
+                    </div>
+                  </form>
+                  <div class="status" id="catalogProductStatusMessage" aria-live="polite"></div>
+                </div>
+              </div>
+
+              <div class="catalog-board">
+                <div class="mini-panel">
+                  <div class="section-head">
+                    <div>
+                      <h3>Pipeline de catalogo</h3>
+                      <p>Lo que el vendedor esta moviendo hoy.</p>
+                    </div>
+                    <button class="button" id="refreshCatalogButton" type="button">Actualizar catalogo</button>
+                  </div>
+                  <div class="user-list" id="catalogProductList"></div>
+                </div>
+                <div class="mini-panel">
+                  <div class="section-head">
+                    <div>
+                      <h3>Studio IA · Nano Banana</h3>
+                      <p>Pedidos al automatizador para mejorar fotos y empujar publicacion.</p>
+                    </div>
+                    <button class="button" id="refreshPhotoJobsButton" type="button">Actualizar cola IA</button>
+                  </div>
+                  <div class="helper" id="photoStudioHelper">El vendedor pide mejora. El automatizador ejecuta y devuelve imagen final.</div>
+                  <div class="user-list" id="photoJobList"></div>
+                  <div class="status" id="photoJobStatusMessage" aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="story-grid" id="usersSection" hidden>
+          <article class="panel users-card">
+            <div class="section-head">
+              <div>
+                <h2>Usuarios</h2>
+                <p>Solo visible para owner y admin.</p>
+              </div>
+              <button class="button" id="refreshUsersButton" type="button">Actualizar usuarios</button>
+            </div>
+            <div class="user-list" id="userList"></div>
+          </article>
+
+          <aside class="panel editor-card">
+            <div class="section-head">
+              <div>
+                <h2 id="editorTitle">Nuevo usuario</h2>
+                <p>Alta y edición simple con permisos mínimos.</p>
+              </div>
+              <button class="button" id="newUserButton" type="button">Limpiar</button>
+            </div>
+            <form id="userForm">
+              <div class="editor-grid">
+                <label class="full">
+                  <span>Nombre</span>
+                  <input id="userName" type="text" />
+                </label>
+                <label class="full">
+                  <span>Email</span>
+                  <input id="userEmail" type="email" />
+                </label>
+                <label>
+                  <span>Rol</span>
+                  <select id="userRole">
+                    <option value="agent">Vendedor</option>
+                    <option value="admin">Automatizador n8n</option>
+                    <option value="owner">Owner</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Estado</span>
+                  <select id="userStatus">
+                    <option value="active">Active</option>
+                    <option value="invited">Invited</option>
+                    <option value="disabled">Disabled</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Acceso</span>
+                  <select id="userAccessMode">
+                    <option value="password">Password</option>
+                    <option value="google">Google invite</option>
+                    <option value="hybrid">Password + Google</option>
+                  </select>
+                </label>
+                <label class="full">
+                  <span id="passwordLabel">Contrasena inicial</span>
+                  <input id="userPassword" type="password" />
+                </label>
+              </div>
+              <div class="muted-box" id="userInviteHint" hidden></div>
+              <div class="helper">Un admin no puede promover owners. Un agent no ve este bloque.</div>
+              <button class="button button--primary" type="submit">Guardar usuario</button>
+            </form>
+            <div class="status" id="userStatusMessage" aria-live="polite"></div>
+          </aside>
+        </section>
+
+        <section class="story-grid" id="tenantSecuritySection" hidden>
+          <article class="panel users-card" id="tenantIdentitySection">
+            <div class="section-head">
+              <div>
+                <h2>Tenant e identidad</h2>
+                <p>Base del SaaS: slug, estado y datos de Google para registrar usuarios con Gmail.</p>
+              </div>
+            </div>
+            <form id="tenantForm">
+              <div class="editor-grid">
+                <label>
+                  <span>Nombre del tenant</span>
+                  <input id="tenantName" type="text" />
+                </label>
+                <label>
+                  <span>Slug</span>
+                  <input id="tenantSlug" type="text" />
+                </label>
+                <label>
+                  <span>Estado</span>
+                  <select id="tenantStatus">
+                    <option value="active">Active</option>
+                    <option value="paused">Paused</option>
+                    <option value="disabled">Disabled</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Tenant ID</span>
+                  <input id="tenantId" type="text" disabled />
+                </label>
+                <label>
+                  <span>Google habilitado</span>
+                  <select id="googleEnabled">
+                    <option value="false">No</option>
+                    <option value="true">Si</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Hosted domain</span>
+                  <input id="googleHostedDomain" type="text" placeholder="empresa.com" />
+                </label>
+                <label class="full">
+                  <span>Google Client ID</span>
+                  <input id="googleClientId" type="text" placeholder="123456.apps.googleusercontent.com" />
+                </label>
+                <label class="full">
+                  <span>Google Client Secret</span>
+                  <input id="googleClientSecret" type="password" placeholder="Solo completa para configurar o reemplazar el secret" />
+                </label>
+                <label class="full">
+                  <span>Google Redirect URI</span>
+                  <input id="googleRedirectUri" type="text" placeholder="https://tu-app.com/auth/google/callback" />
+                </label>
+                <label class="full">
+                  <span>Dominios permitidos</span>
+                  <input id="googleAllowedDomains" type="text" placeholder="empresa.com, clientes.com" />
+                </label>
+                <label class="full">
+                  <span>Texto del boton Google</span>
+                  <input id="googleButtonLabel" type="text" placeholder="Continuar con Google" />
+                </label>
+              </div>
+              <div class="helper" id="googleClientSecretStatus">Client secret pendiente.</div>
+              <div class="helper">Para alta por Gmail necesitas habilitar Google, definir client ID, redirect URI y opcionalmente limitar por dominio.</div>
+              <button class="button button--primary" id="saveTenantButton" type="submit">Guardar tenant e identidad</button>
+            </form>
+            <div class="status" id="tenantStatusMessage" aria-live="polite"></div>
+          </article>
+
+          <aside class="panel editor-card" id="apiKeysSection">
+            <div class="section-head">
+              <div>
+                <h2>API Keys M2M</h2>
+                <p>Claves para provisioning, automatizaciones y acceso servidor a servidor.</p>
+              </div>
+              <button class="button" id="refreshApiKeysButton" type="button">Actualizar keys</button>
+            </div>
+            <form id="apiKeyForm">
+              <div class="editor-grid">
+                <label class="full">
+                  <span>Nombre interno</span>
+                  <input id="apiKeyName" type="text" placeholder="Google user provisioning" />
+                </label>
+                <label class="full">
+                  <span>Scopes</span>
+                  <input id="apiKeyScopes" type="text" value="identity:google-provision" placeholder="identity:google-provision" />
+                </label>
+              </div>
+              <div class="helper">La raw key se muestra una sola vez cuando se crea. Guardala en tu secret manager, no en el frontend.</div>
+              <button class="button button--primary" type="submit">Generar API key</button>
+            </form>
+            <div class="status" id="apiKeyStatusMessage" aria-live="polite"></div>
+            <div class="muted-box" id="apiKeySecretBox">Todavia no generaste una API key M2M.</div>
+            <div class="mini-panel">
+              <h3 style="margin-bottom:10px">Alta Google via M2M</h3>
+              <pre class="code-box" id="googleProvisioningPreview"></pre>
+            </div>
+            <div class="user-list" id="apiKeyList"></div>
+          </aside>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "tenants": [
+    {
+      "id": "f4f5b0d3-3ae3-4d4d-8e42-73af0f98fd4b",
+      "slug": "casa-medanos",
+      "name": "Casa Medanos",
+      "status": "active",
+      "createdAt": "2026-03-23T00:00:00.000Z",
+      "updatedAt": "2026-03-24T02:20:00.000Z",
+      "domain": {
+        "siteName": "Casa Medanos",
+        "customDomain": "vendo.uy",
+        "publicUrl": "https://vendo.uy",
+        "deployBranch": "main",
+        "publicationStatus": "iterando",
+        "dnsStatus": "pendiente",
+        "sslStatus": "pendiente"
+      },
+      "publishing": {
+        "focus": "seguro",
+        "launchChecklist": [
+          {
+            "id": "catalog",
+            "label": "Catalogo visible y claro",
+            "done": true
+          },
+          {
+            "id": "chat",
+            "label": "Asistente de venta conectado",
+            "done": true
+          },
+          {
+            "id": "domain",
+            "label": "Dominio y DNS verificados",
+            "done": false
+          },
+          {
+            "id": "workflow",
+            "label": "Flujo de automatizacion documentado",
+            "done": true
+          }
+        ]
+      },
+      "vision": {
+        "concept": "memoria comercial viva",
+        "thesis": "El repo no solo publica productos: registra cambios reales de inventario, ventas, automatizacion y mejora continua.",
+        "nextExperiment": "Convertir cada cambio del catalogo en una senal para el asistente, el dominio y futuras campanas."
+      },
+      "identity": {
+        "google": {
+          "enabled": false,
+          "clientId": "",
+          "redirectUri": "",
+          "hostedDomain": "",
+          "allowedDomains": [],
+          "buttonLabel": "Continuar con Google",
+          "clientSecret": ""
+        }
+      }
+    }
+  ]
+}

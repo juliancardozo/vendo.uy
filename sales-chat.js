@@ -31,8 +31,8 @@ const products = [
 ];
 
 const CHAT_CONFIG = {
-  webhookUrl: 'http://localhost:5678/webhook/sales-chat',
-  webhookEnabled: true,
+  webhookUrl: '',
+  webhookEnabled: false,
   whatsappPhone: '59899576144',
   siteName: 'Casa Medanos'
 };
@@ -574,6 +574,42 @@ async function getBotReply(userText) {
   return parseAutomationResponse(await response.json(), userText);
 }
 
+async function loadPublicConfig() {
+  try {
+    const response = await fetch('/api/public-config', {
+      headers: {
+        Accept: 'application/json'
+      },
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+    const chat = payload?.chat || {};
+
+    if (typeof chat.webhookUrl === 'string') {
+      CHAT_CONFIG.webhookUrl = chat.webhookUrl;
+    }
+    if (typeof chat.webhookEnabled === 'boolean') {
+      CHAT_CONFIG.webhookEnabled = chat.webhookEnabled && Boolean(CHAT_CONFIG.webhookUrl);
+    }
+    if (typeof chat.whatsappPhone === 'string' && chat.whatsappPhone.trim()) {
+      CHAT_CONFIG.whatsappPhone = chat.whatsappPhone.trim();
+    }
+    if (typeof chat.siteName === 'string' && chat.siteName.trim()) {
+      CHAT_CONFIG.siteName = chat.siteName.trim();
+    }
+
+    updateMainCtas();
+    renderProducts();
+  } catch (_error) {
+    // Keep local fallback behavior when public config is unavailable.
+  }
+}
+
 async function queueChatPrompt(prompt) {
   const cleanPrompt = String(prompt || '').trim();
   if (!cleanPrompt) return;
@@ -657,3 +693,4 @@ renderFilters();
 renderProducts();
 renderLauncherState();
 renderQuickActions();
+loadPublicConfig();

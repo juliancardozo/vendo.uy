@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "id": "325b6542-c11d-45fb-8ea2-df8d79dc4125",
+      "tenantId": "f4f5b0d3-3ae3-4d4d-8e42-73af0f98fd4b",
+      "name": "Owner Casa Medanos",
+      "email": "owner@casamedanos.local",
+      "role": "owner",
+      "status": "active",
+      "passwordHash": "715a7b283db68dfc343791d90c5cc25cba33a62490b564e8be860b449228f03b5be95177bcdb451891a265b5873a3741fd24867a53d7a6dfaa7f79bc0a0ed3cb",
+      "salt": "93f6375eb6ccff3a8919ca1f98864c6b",
+      "createdAt": "2026-03-23T00:00:00.000Z",
+      "updatedAt": "2026-03-24T02:47:03.205Z",
+      "lastLoginAt": "2026-03-24T02:47:03.205Z",
+      "authProviders": {
+        "password": {
+          "enabled": true,
+          "registeredAt": "2026-03-23T00:00:00.000Z"
+        },
+        "google": null
+      }
+    },
+    {
+      "id": "6f991e06-7de6-4fd0-8b16-af165335895f",
+      "tenantId": "f4f5b0d3-3ae3-4d4d-8e42-73af0f98fd4b",
+      "name": "Automatizador n8n Casa Medanos",
+      "email": "automatizador@casamedanos.local",
+      "role": "admin",
+      "status": "active",
+      "passwordHash": "8e43d96f2cfacf32f801d54bfddfa9d2dcaa647bdc09d1ffc63636ca78dbe1828b03da0bb794b88ce517eaf06f00a35dab0b283567ced151e7a90c73cd757025",
+      "salt": "426962820dd603a4ae855ac791cc5691",
+      "createdAt": "2026-03-24T01:33:15.794Z",
+      "updatedAt": "2026-03-24T02:52:19.220Z",
+      "lastLoginAt": "2026-03-24T02:52:19.220Z",
+      "authProviders": {
+        "password": {
+          "enabled": true,
+          "registeredAt": "2026-03-24T01:33:15.794Z"
+        },
+        "google": null
+      }
+    },
+    {
+      "id": "5b20fc3c-7067-4d74-a8bb-123968be63ca",
+      "tenantId": "f4f5b0d3-3ae3-4d4d-8e42-73af0f98fd4b",
+      "name": "Vendedor Casa Medanos",
+      "email": "vendedor@casamedanos.local",
+      "role": "agent",
+      "status": "active",
+      "passwordHash": "a4868290b38306f78b0e1bf9060766e6a0445505d42a735653eb6086a6c1cbfdddfdfe3e0bd27ac533b4255f05daf4577404252ea5c815206909a462f90c635e",
+      "salt": "e3c6bc33d51a6b82a721d1a168762d3b",
+      "createdAt": "2026-03-24T01:35:29.530Z",
+      "updatedAt": "2026-03-24T02:50:23.502Z",
+      "lastLoginAt": "2026-03-24T02:50:23.502Z",
+      "authProviders": {
+        "password": {
+          "enabled": true,
+          "registeredAt": "2026-03-24T01:35:29.530Z"
+        },
+        "google": null
+      }
+    }
+  ]
+}

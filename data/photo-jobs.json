@@ -1,0 +1,20 @@
+{
+  "jobs": [
+    {
+      "id": "b0fe4877-df21-4d10-9f19-36b782af039c",
+      "tenantId": "f4f5b0d3-3ae3-4d4d-8e42-73af0f98fd4b",
+      "productId": "f4aefb85-e789-4663-afee-af80d7aee9c9",
+      "productName": "Lampara de prueba workflow",
+      "status": "in_progress",
+      "requestedTool": "nano-banana",
+      "prompt": "Fondo limpio, luz suave y estilo marketplace premium.",
+      "requestedByUserId": "325b6542-c11d-45fb-8ea2-df8d79dc4125",
+      "requestedAt": "2026-03-24T03:02:01.920Z",
+      "assignedToRole": "admin",
+      "resultImage": "",
+      "resultNotes": "",
+      "updatedAt": "2026-03-24T03:02:02.265Z",
+      "completedAt": null
+    }
+  ]
+}

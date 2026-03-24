@@ -1,0 +1,79 @@
+{
+  "name": "Notification Service - Demo Intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "notification-demo-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "notif-demo-webhook",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ],
+      "webhookId": "notification-demo-intake"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\\nconst name = String(body.name || '').trim();\\nconst email = String(body.email || '').trim().toLowerCase();\\nconst company = String(body.company || '').trim();\\nconst monthlyContacts = Number(body.monthlyContacts || 0);\\nconst channels = Array.isArray(body.channels) ? body.channels.map(value => String(value).toLowerCase()) : [];\\nconst useCase = String(body.useCase || '').trim();\\nconst currentTools = Array.isArray(body.currentTools) ? body.currentTools : [];\\nconst urgency = String(body.urgency || 'media').trim().toLowerCase();\\n\\nif (!name || !email || !company) {\\n  return [{ json: { success: false, error: 'name, email y company son obligatorios para agendar una demo.' } }];\\n}\\n\\nconst bundles = [];\\nif (channels.includes('whatsapp')) bundles.push('Alertas transaccionales por WhatsApp');\\nif (channels.includes('email')) bundles.push('Secuencias de email y resumenes automaticos');\\nif (channels.includes('sms')) bundles.push('Recordatorios criticos por SMS');\\nif (channels.includes('push')) bundles.push('Eventos push para app o panel interno');\\nif (!bundles.length) bundles.push('Arquitectura base de eventos y reglas de notificacion');\\n\\nconst score =\\n  (monthlyContacts >= 50000 ? 4 : monthlyContacts >= 10000 ? 3 : monthlyContacts > 0 ? 2 : 1) +\\n  Math.min(channels.length, 3) +\\n  (urgency === 'alta' ? 2 : urgency === 'media' ? 1 : 0) +\\n  (currentTools.length ? 1 : 0);\\n\\nconst segment = score >= 8 ? 'enterprise' : score >= 5 ? 'growth' : 'starter';\\nconst recommendedTrack = segment === 'enterprise'\\n  ? 'Workshop tecnico + roadmap de integraciones + piloto de alto volumen'\\n  : segment === 'growth'\\n    ? 'Demo comercial + blueprint de flujos + piloto de 2 a 4 semanas'\\n    : 'Demo corta + setup inicial + primera automatizacion cerrada';\\n\\nconst brief = {\\n  lead: { name, email, company },\\n  segment,\\n  use_case: useCase || 'notificaciones automatizadas',\\n  channels,\\n  monthly_contacts: monthlyContacts,\\n  current_tools: currentTools,\\n  urgency,\\n  bundles,\\n  recommended_track: recommendedTrack,\\n  next_step: 'Agendar demo con discovery orientado a eventos, canales y ROI.'\\n};\\n\\nconst staticData = $getWorkflowStaticData('global');\\nstaticData.requests = Array.isArray(staticData.requests) ? staticData.requests : [];\\nstaticData.requests.unshift({\\n  created_at: new Date().toISOString(),\\n  ...brief\\n});\\nstaticData.requests = staticData.requests.slice(0, 500);\\n\\nreturn [{\\n  json: {\\n    success: true,\\n    segment,\\n    recommended_track: recommendedTrack,\\n    bundles,\\n    brief,\\n    registry_size: staticData.requests.length,\\n    message: `Solicitud registrada para ${company}. Recomiendo ${recommendedTrack}.`\\n  }\\n}];"
+      },
+      "id": "notif-demo-code",
+      "name": "Score Demo Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "notif-demo-respond",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        860,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Score Demo Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Demo Request": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}
