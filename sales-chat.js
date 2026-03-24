@@ -34,8 +34,7 @@ const CHAT_CONFIG = {
   webhookUrl: 'http://localhost:5678/webhook/sales-chat',
   webhookEnabled: true,
   whatsappPhone: '59899576144',
-  siteName: 'Casa Medanos',
-  storageKey: 'casa-medanos-lead-v1'
+  siteName: 'Casa Medanos'
 };
 
 const DEFAULT_PRODUCT_IMAGE = 'img/voluntad.svg';
@@ -92,9 +91,6 @@ let selectedRoom = 'Todos';
 let search = '';
 let chatBooted = false;
 let launcherMinimized = false;
-let emailReminderShown = false;
-let leadGateRevealed = false;
-let leadProfile = loadLeadProfile();
 
 const salesBot = document.querySelector('.sales-bot');
 const productGrid = document.getElementById('productGrid');
@@ -113,60 +109,9 @@ const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
 const openChatCta = document.getElementById('openChatCta');
 const contactWhatsappLink = document.getElementById('contactWhatsappLink');
-const chatLeadGate = document.getElementById('chatLeadGate');
-const chatLeadForm = document.getElementById('chatLeadForm');
-const chatLeadName = document.getElementById('chatLeadName');
-const chatLeadEmail = document.getElementById('chatLeadEmail');
-const chatLeadWhatsapp = document.getElementById('chatLeadWhatsapp');
-const chatLeadSaved = document.getElementById('chatLeadSaved');
-const chatLeadSubmit = chatLeadForm ? chatLeadForm.querySelector('button') : null;
-
-if (chatLeadForm) {
-  chatLeadForm.noValidate = true;
-}
-
-function makeSessionId() {
-  return `lead-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function loadLeadProfile() {
-  try {
-    const raw = window.localStorage.getItem(CHAT_CONFIG.storageKey);
-    if (!raw) {
-      return { name: '', email: '', whatsapp: '', sessionId: makeSessionId() };
-    }
-
-    const parsed = JSON.parse(raw);
-    return {
-      name: String(parsed.name || '').trim(),
-      email: String(parsed.email || '').trim(),
-      whatsapp: String(parsed.whatsapp || '').trim(),
-      sessionId: String(parsed.sessionId || makeSessionId())
-    };
-  } catch (error) {
-    return { name: '', email: '', whatsapp: '', sessionId: makeSessionId() };
-  }
-}
-
-function saveLeadProfile() {
-  window.localStorage.setItem(CHAT_CONFIG.storageKey, JSON.stringify(leadProfile));
-}
-
-function isValidEmail(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
-}
-
-function hasLeadProfile() {
-  return isValidEmail(leadProfile.email);
-}
 
 function buildWhatsappMessage(text) {
-  return [
-    text,
-    leadProfile.name ? `Nombre: ${leadProfile.name}.` : '',
-    leadProfile.email ? `Email: ${leadProfile.email}.` : '',
-    leadProfile.whatsapp ? `WhatsApp: ${leadProfile.whatsapp}.` : ''
-  ].filter(Boolean).join(' ').trim();
+  return String(text || '').trim();
 }
 
 function buildWhatsappUrl(text) {
@@ -278,31 +223,8 @@ function renderLauncherState() {
   salesBot.classList.toggle('sales-bot--compact', launcherMinimized);
   salesBot.classList.toggle('sales-bot--open', !salesChat.hidden);
   chatLauncherTitle.textContent = launcherMinimized ? 'Chat' : 'Asistente de venta';
-  chatLauncherSubtitle.textContent = hasLeadProfile()
-    ? 'Email guardado para seguir la consulta'
-    : 'Busca primero y segui por WhatsApp';
-}
-
-function renderLeadGate() {
-  chatLeadGate.hidden = !leadGateRevealed;
-  chatLeadName.value = leadProfile.name || '';
-  chatLeadEmail.value = leadProfile.email || '';
-  chatLeadWhatsapp.value = leadProfile.whatsapp || '';
-  chatLeadSaved.hidden = !hasLeadProfile();
-  chatLeadSaved.textContent = hasLeadProfile()
-    ? `Datos guardados: ${leadProfile.email}${leadProfile.name ? ` | ${leadProfile.name}` : ''}`
-    : '';
-
-  if (chatLeadSubmit) {
-    chatLeadSubmit.textContent = hasLeadProfile() ? 'Actualizar datos' : 'Guardar email';
-  }
-
-  chatInput.disabled = false;
-  chatForm.querySelector('button').disabled = false;
-  chatInput.placeholder = 'Ej: Busco un ropero para dormitorio';
-  chatQuickActions.hidden = false;
+  chatLauncherSubtitle.textContent = 'Busca y segui por WhatsApp';
   updateMainCtas();
-  renderLauncherState();
   renderProducts();
 }
 
@@ -345,34 +267,10 @@ function setChatStatus(message) {
   chatStatus.textContent = message || '';
 }
 
-function revealLeadGate(options = {}) {
-  if (!leadGateRevealed) {
-    leadGateRevealed = true;
-    renderLeadGate();
-  }
-
-  if (options.announce && !hasLeadProfile() && !emailReminderShown) {
-    addChatBubble('bot', 'Si queres que te mande detalles o deje registrada la consulta con seguimiento, dejame tu email abajo. Es opcional.');
-    emailReminderShown = true;
-  }
-
-  if (options.focus) {
-    chatLeadEmail.focus();
-  }
-
-  chatLeadGate.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-}
-
 function buildSuccessStatus() {
-  if (CHAT_CONFIG.webhookEnabled) {
-    return hasLeadProfile()
-      ? 'Consulta registrada. Si queres, segui por WhatsApp.'
-      : 'Busqueda lista. Si queres seguimiento, deja tu email abajo.';
-  }
-
-  return hasLeadProfile()
-    ? 'Modo local activo. Consulta pronta para seguir.'
-    : 'Respuesta lista. Si queres seguimiento, deja tu email abajo.';
+  return CHAT_CONFIG.webhookEnabled
+    ? 'Consulta lista. Si queres, segui por WhatsApp.'
+    : 'Modo local activo.';
 }
 
 function bootChat() {
@@ -380,7 +278,6 @@ function bootChat() {
   addChatBubble('bot', 'Hola. Puedo ayudarte a encontrar productos, filtrar por ambiente y preparar la consulta para WhatsApp.');
   addChatBubble('bot', 'Proba con algo como "Que electrodomesticos quedan?" o "Busco un ropero para dormitorio".');
   renderQuickActions();
-  renderLeadGate();
 }
 
 function openChat() {
@@ -401,8 +298,17 @@ function closeChat() {
   salesChat.hidden = true;
   chatLauncher.setAttribute('aria-expanded', 'false');
   launcherMinimized = true;
-  setChatStatus('');
+  resetChatSession();
   renderLauncherState();
+}
+
+function resetChatSession() {
+  chatBooted = false;
+  chatMessages.innerHTML = '';
+  chatQuickActions.innerHTML = '';
+  chatStatus.textContent = '';
+  chatInput.value = '';
+  chatInput.placeholder = 'Ej: Busco un ropero para dormitorio';
 }
 
 function renderQuickActions(actions = DEFAULT_CHAT_ACTIONS) {
@@ -616,6 +522,10 @@ function buildLocalBotReply(userText) {
 }
 
 function parseAutomationResponse(payload, fallbackPrompt) {
+  if (payload?.requires_email) {
+    return buildLocalBotReply(fallbackPrompt);
+  }
+
   const suggestions = (Array.isArray(payload?.suggestions) ? payload.suggestions : [])
     .map(item => ({
       name: item.name || item.title || item.sku || 'Producto',
@@ -647,12 +557,6 @@ async function getBotReply(userText) {
       text: userText,
       source: 'website-chat',
       site: CHAT_CONFIG.siteName,
-      sessionId: leadProfile.sessionId,
-      lead: {
-        name: leadProfile.name,
-        email: leadProfile.email,
-        whatsapp: leadProfile.whatsapp
-      },
       whatsappUrl: buildWhatsappUrl(`Hola, quiero seguir esta consulta por WhatsApp: ${userText}`),
       catalog: availableProductsList().map(product => ({
         name: product.name,
@@ -683,25 +587,13 @@ async function queueChatPrompt(prompt) {
     addChatBubble('bot', reply.text);
     renderSuggestionCards(reply.suggestions);
     renderQuickActions(reply.actions);
-
-    if (!hasLeadProfile()) {
-      revealLeadGate({ announce: true });
-    }
-
     setChatStatus(buildSuccessStatus());
   } catch (error) {
     const fallback = buildLocalBotReply(cleanPrompt);
     addChatBubble('bot', `${fallback.text}\n\nNo pude llegar al webhook configurado, asi que respondo con el catalogo local.`);
     renderSuggestionCards(fallback.suggestions);
     renderQuickActions(fallback.actions);
-
-    if (!hasLeadProfile()) {
-      revealLeadGate({ announce: true });
-    }
-
-    setChatStatus(hasLeadProfile()
-      ? 'Fallo el webhook. Quedo activo el fallback local.'
-      : 'Fallo el webhook. Respondi con el catalogo local y podes dejar tu email abajo si queres seguimiento.');
+    setChatStatus('Fallo el webhook. Quedo activo el fallback local.');
   }
 }
 
@@ -751,31 +643,6 @@ if (openChatCta) {
   });
 }
 
-chatLeadForm.addEventListener('submit', event => {
-  event.preventDefault();
-
-  const email = chatLeadEmail.value.trim();
-  if (!isValidEmail(email)) {
-    setChatStatus('Necesito un email valido para enviarte seguimiento.');
-    chatLeadEmail.focus();
-    return;
-  }
-
-  leadProfile = {
-    ...leadProfile,
-    name: chatLeadName.value.trim(),
-    email,
-    whatsapp: chatLeadWhatsapp.value.trim()
-  };
-
-  saveLeadProfile();
-  leadGateRevealed = true;
-  renderLeadGate();
-  renderQuickActions();
-  setChatStatus('Email guardado. Si queres, sigo tambien por WhatsApp.');
-  addChatBubble('bot', 'Perfecto. Ya guarde tus datos. Ahora puedo dejar seguimiento por email y seguir la consulta por aca o por WhatsApp.');
-});
-
 chatForm.addEventListener('submit', event => {
   event.preventDefault();
   const prompt = chatInput.value.trim();
@@ -788,6 +655,5 @@ chatForm.addEventListener('submit', event => {
 renderStats();
 renderFilters();
 renderProducts();
-renderLeadGate();
 renderLauncherState();
 renderQuickActions();
