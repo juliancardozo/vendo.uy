@@ -5,13 +5,12 @@ const products = [
   { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg' },
   { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg', sold: true },
   { name: 'Microondas', price: 2040, original: 2400, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
-  { name: 'Tostadora', price: 1000, original: 1600, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/tostadora-thumb.jpg' },
-  { name: 'Jarra electrica', price: 1000, original: 1800, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
+  { name: 'Jarra electrica y Tostadora', price: 1000, original: 1800, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg' },
   { name: 'Toca discos Bluetooth (incluye vinilo)', price: 1500, original: 2100, category: 'Electrodomestico', room: 'Living', image: 'img/reales/thumbs/tocaDisco-thumb.jpg', sold: true },
   { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
-  { name: 'Ropero grande 6 puertas y 2 cajones', price: 12000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/roperoDormitorio-thumb.jpg' },
+  { name: 'Ropero grande 6 puertas y 2 cajones', price: 10000, original: 16800, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/roperoDormitorio-thumb.jpg' },
   { name: 'Sommier 2 plazas', price: 4000, original: 5600, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/sommier-thumb.jpg', sold: true },
-  { name: 'Mesa de luz + lampara', price: 1500, original: 2500, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/mesaDeLuz-thumb.jpg' },
+  { name: 'Mesa de luz + lampara', price: 1000, original: 2500, category: 'Mueble', room: 'Dormitorio', image: 'img/reales/thumbs/mesaDeLuz-thumb.jpg' },
   { name: 'Silla de escritorio', price: 1500, original: 3800, category: 'Mueble', room: 'Escritorio', image: 'img/reales/thumbs/sillaDeEscritorio-thumb.jpg', sold: true },
   { name: 'Ropero mediano 4 puertas y 2 cajones', price: 3500, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/reales/thumbs/roperos-thumb.jpg' },
   { name: 'Ropero blanco mediano 2 puertas', price: 3500, original: 4200, category: 'Mueble', room: 'Escritorio', image: 'img/reales/thumbs/roperos-thumb.jpg' },
@@ -27,7 +26,6 @@ const products = [
   { name: 'Mesa para exterior 1,5 m x 1 m', price: 1700, original: 3200, category: 'Mueble', room: 'Living' },
   { name: 'Mesa de vidrio negra', price: 3000, original: 4200, category: 'Mueble', room: 'Living', image: 'img/reales/thumbs/mesaVidrioNegra-thumb.jpg' },
   { name: 'Mantel peruano', price: 1000, original: 1500, category: 'Decoracion', room: 'Comedor', image: 'img/reales/thumbs/mantel-thumb.jpg', sold: true },
-  { name: 'Caja de libros. Aprox. $500 por libro (programacion, filosofia, psicologia, musica)', price: 500, original: 1000, category: 'Libros', room: 'Living', image: 'img/reales/thumbs/cajaDeLibro-thumb.jpg', sold: true }
 ];
 
 const CHAT_CONFIG = {
