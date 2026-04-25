@@ -4,7 +4,7 @@ const products = [
   { name: 'Cocina', price: 4500, original: 6300, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
   { name: 'Heladera', price: 10000, original: 14000, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/heladera-thumb.jpg', sold: true },
   { name: 'Mesa de trabajo 1,80 nueva', price: 4000, original: 5600, category: 'Mueble', room: 'Cocina', image: 'img/reales/thumbs/mesaTrabajo-thumb.jpg', sold: true },
-  { name: 'Microondas', price: 2040, original: 2400, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
+  { name: 'Microondas', price: 1500, original: 2400, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/microondas-thumb.jpg' },
   { name: 'Jarra electrica y Tostadora', price: 1000, original: 1800, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/jarra-thumb.jpg', sold: true },
   { name: 'Toca discos Bluetooth (incluye vinilo)', price: 1500, original: 2100, category: 'Electrodomestico', room: 'Living', image: 'img/reales/thumbs/tocaDisco-thumb.jpg', sold: true },
   { name: 'Cocina, garrafa y mueble', price: 6000, original: 8400, category: 'Electrodomestico', room: 'Cocina', image: 'img/reales/thumbs/cocina-thumb.jpg' },
